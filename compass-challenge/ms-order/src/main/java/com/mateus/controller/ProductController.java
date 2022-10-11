@@ -1,11 +1,41 @@
 package com.mateus.controller;
 
+import com.mateus.domain.dto.ProductDTO;
+import com.mateus.domain.dto.ProductFormPostDTO;
+import com.mateus.domain.dto.ProductFormPutDTO;
+import com.mateus.service.impl.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
+
+    private final ProductServiceImpl productService;
+
+    private final ModelMapper mapper;
+
+    @PostMapping
+    public ResponseEntity<ProductDTO> save(@RequestBody ProductFormPostDTO productFormPostDTO){
+        return ResponseEntity.created(productService.save(productFormPostDTO)).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProductDTO>> findAll(@PageableDefault(sort = "id", direction = Sort.Direction.ASC)
+                                                        Pageable page){
+        return ResponseEntity.ok(productService.findAll(page));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductFormPutDTO productFormPutDTO){
+        return ResponseEntity.ok(productService.update(id, productFormPutDTO));
+    }
+
 }
