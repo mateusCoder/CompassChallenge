@@ -28,7 +28,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> findAll(@PageableDefault(sort = "id", direction = Sort.Direction.ASC)
+    public ResponseEntity<Page<ProductDTO>> findAll(@PageableDefault(sort = "active", direction = Sort.Direction.DESC)
                                                         Pageable page){
         return ResponseEntity.ok(productService.findAll(page));
     }
