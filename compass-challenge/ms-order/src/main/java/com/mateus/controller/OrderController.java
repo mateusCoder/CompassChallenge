@@ -4,12 +4,10 @@ import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/orders")
@@ -19,7 +17,7 @@ public class OrderController {
     private final OrderServiceImpl orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDTO> save(@RequestBody OrderFormDTO orderFormDTO){
+    public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderFormDTO orderFormDTO){
         return ResponseEntity.created(orderService.save(orderFormDTO)).build();
     }
 

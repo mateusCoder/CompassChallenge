@@ -6,6 +6,7 @@ import com.mateus.domain.constant.Status;
 import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.domain.dto.OrderProductsFormDTO;
+import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
 import com.mateus.repository.ProductRepository;
 import com.mateus.service.OrderService;
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
     public URI save(OrderFormDTO orderFormDTO) {
         Order order = mapper.map(orderFormDTO, Order.class);
         List<Product> products = orderFormDTO.getOrderProducts().stream().map(e ->
-                productRepository.findByNameAndActiveTrue(e.getProductsName()).orElseThrow(RuntimeException::new)).toList();
+                productRepository.findByNameAndActiveTrue(e.getProductsName()).orElseThrow(() -> new ObjectNotFound("Product Not Found!"))).toList();
         List<BigDecimal> productsPrice = products.stream().map(Product::getPrice).toList();
         List<Integer> productsAmount = orderFormDTO.getOrderProducts().stream()
                 .map(OrderProductsFormDTO::getAmount).toList();
@@ -52,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO findById(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException());
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Order Not Found!"));
         return mapper.map(order, OrderDTO.class);
     }
 

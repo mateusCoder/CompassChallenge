@@ -23,5 +23,6 @@ public class ProductFormPutDTO {
     @NotNull
     private BigDecimal price;
 
+    @NotNull
     private Boolean active;
 }

@@ -4,6 +4,7 @@ import com.mateus.domain.Product;
 import com.mateus.domain.dto.ProductDTO;
 import com.mateus.domain.dto.ProductFormPostDTO;
 import com.mateus.domain.dto.ProductFormPutDTO;
+import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.ProductRepository;
 import com.mateus.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO update(Long id, ProductFormPutDTO productFormPutDTO) {
+        productRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Product Not Found!"));
         Product product = mapper.map(productFormPutDTO, Product.class);
         product.setId(id);
         productRepository.save(product);

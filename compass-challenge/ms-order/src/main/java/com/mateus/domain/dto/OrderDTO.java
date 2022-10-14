@@ -1,5 +1,6 @@
 package com.mateus.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class OrderDTO {
 
     private BigDecimal totalOrderPrice;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate localDate;
 
     private Status status;

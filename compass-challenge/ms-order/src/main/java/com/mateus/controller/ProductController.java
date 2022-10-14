@@ -13,6 +13,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class ProductController {
     private final ModelMapper mapper;
 
     @PostMapping
-    public ResponseEntity<ProductDTO> save(@RequestBody ProductFormPostDTO productFormPostDTO){
+    public ResponseEntity<ProductDTO> save(@Valid @RequestBody ProductFormPostDTO productFormPostDTO){
         return ResponseEntity.created(productService.save(productFormPostDTO)).build();
     }
 
@@ -34,8 +36,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductFormPutDTO productFormPutDTO){
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductFormPutDTO productFormPutDTO){
         return ResponseEntity.ok(productService.update(id, productFormPutDTO));
     }
-
 }

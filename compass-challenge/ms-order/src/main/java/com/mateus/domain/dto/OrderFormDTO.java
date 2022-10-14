@@ -1,15 +1,14 @@
 package com.mateus.domain.dto;
 
-import com.mateus.domain.constant.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,10 +17,11 @@ import java.util.List;
 @Builder
 public class OrderFormDTO {
 
-    @NotBlank
+    @CPF
+    @Pattern(regexp = "[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\-[0-9]{2}")
     private String cpf;
 
-    @NotBlank
+    @NotNull
     private List<OrderProductsFormDTO> orderProducts;
 
 }
