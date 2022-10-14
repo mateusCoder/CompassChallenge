@@ -1,12 +1,13 @@
 package com.mateus.domain.dto;
 
-import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,17 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-public class OrderDTO {
+public class OrderFormDTO {
 
+    @NotBlank
     private String cpf;
 
-    private Long orderNumber;
+    @NotBlank
+    private List<OrderProductsFormDTO> orderProducts;
 
-    private List<Product> products;
-
-    private BigDecimal totalOrderPrice;
-
-    private LocalDate localDate;
-
-    private Status status;
 }

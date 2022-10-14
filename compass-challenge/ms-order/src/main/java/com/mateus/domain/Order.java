@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-@Entity(name="\"Order\"")
+@Entity(name = "`ORDER`")
 public class Order {
 
     @Id
@@ -25,16 +25,19 @@ public class Order {
 
     private String cpf;
 
-    private String number;
+    private Long number;
 
-    @OneToMany
-    @JoinColumn(name = "orderId", referencedColumnName = "id")
+    @ManyToMany
     private List<Product> products = new ArrayList<>();
 
-    private BigDecimal totalOrderAmount;
+    private BigDecimal totalOrderPrice;
 
     private LocalDate localDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public void setProducts(Product product) {
+        this.products.add(product);
+    }
 }
