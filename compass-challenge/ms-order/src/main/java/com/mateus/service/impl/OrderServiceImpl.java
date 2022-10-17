@@ -1,9 +1,12 @@
 package com.mateus.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.domain.Order;
 import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
 import com.mateus.domain.dto.OrderDTO;
+import com.mateus.domain.dto.OrderDataProcessingDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.domain.dto.OrderProductsFormDTO;
 import com.mateus.exception.ObjectNotFound;
@@ -37,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
     private Long orderNumber = 1L;
 
     @Override
-    public URI save(OrderFormDTO orderFormDTO) {
+    public URI save(OrderFormDTO orderFormDTO) throws JsonProcessingException {
         Order order = mapper.map(orderFormDTO, Order.class);
         List<Product> products = orderFormDTO.getOrderProducts().stream().map(e ->
                 productRepository.findByNameAndActiveTrue(e.getProductsName())
@@ -52,7 +55,9 @@ public class OrderServiceImpl implements OrderService {
         order.setLocalDate(LocalDate.now());
         order.setStatus(Status.ORDER_CREATED);
         orderRepository.save(order);
-        rabbitTemplate.convertAndSend(QueueUtils.QUEUE_NAME, order.getId());
+
+        String response = convertIntoJson(mapper.map(order, OrderDataProcessingDTO.class));
+        rabbitTemplate.convertAndSend(QueueUtils.ORDER_NOTIFICATION, response);
 
         return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(order.getId());
     }
@@ -71,5 +76,10 @@ public class OrderServiceImpl implements OrderService {
             total = total.add(productPrice.multiply(productAmount));
         }
         return total;
+    }
+
+    protected String convertIntoJson(OrderDataProcessingDTO order) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(order);
     }
 }

@@ -1,5 +1,6 @@
 package com.mateus.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.service.impl.OrderServiceImpl;
@@ -17,7 +18,7 @@ public class OrderController {
     private final OrderServiceImpl orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderFormDTO orderFormDTO){
+    public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderFormDTO orderFormDTO) throws JsonProcessingException {
         return ResponseEntity.created(orderService.save(orderFormDTO)).build();
     }
 

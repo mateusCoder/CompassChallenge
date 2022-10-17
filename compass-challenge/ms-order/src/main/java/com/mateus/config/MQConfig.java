@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 import static com.mateus.util.QueueUtils.EXCHANGE_NAME;
-import static com.mateus.util.QueueUtils.QUEUE_NAME;
+import static com.mateus.util.QueueUtils.ORDER_NOTIFICATION;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class MQConfig {
 
     @PostConstruct
     private void create(){
-        Queue queue = queue(QUEUE_NAME);
+        Queue queue = queue(ORDER_NOTIFICATION);
         DirectExchange directExchange = directExchange();
         Binding relate = relate(queue, directExchange);
 
