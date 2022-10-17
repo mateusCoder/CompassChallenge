@@ -1,5 +1,6 @@
 package com.mateus.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mateus.domain.constant.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class PaymentDTO {
 
     private Status status;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate date;
 }
