@@ -1,5 +1,6 @@
 package com.mateus.exception.handler;
 
+import com.mateus.exception.Conflict;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.exception.StandardError;
 import com.mateus.exception.ValidationError;
@@ -27,6 +28,19 @@ public class ResourceExceptionHandler {
                 request.getRequestURI());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(Conflict.class)
+    public ResponseEntity<StandardError> conflict(Conflict ex,
+                                                  HttpServletRequest request){
+        StandardError error = new StandardError(
+                Instant.now(),
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

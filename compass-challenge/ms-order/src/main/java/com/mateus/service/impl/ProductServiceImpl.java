@@ -4,6 +4,7 @@ import com.mateus.domain.Product;
 import com.mateus.domain.dto.ProductDTO;
 import com.mateus.domain.dto.ProductFormPostDTO;
 import com.mateus.domain.dto.ProductFormPutDTO;
+import com.mateus.exception.Conflict;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.ProductRepository;
 import com.mateus.service.ProductService;
@@ -27,9 +28,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public URI save(ProductFormPostDTO productFormPostDTO) {
         Product product = mapper.map(productFormPostDTO, Product.class);
-        product.setActive(true);
-        productRepository.save(product);
-        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(product.getId());
+        if (!productRepository.existsByName(productFormPostDTO.getName())){
+            product.setActive(true);
+            productRepository.save(product);
+            return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(product.getId());
+        }else {
+            throw new Conflict("Product already exists");
+        }
+
     }
 
     @Override
@@ -46,5 +52,4 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return mapper.map(product, ProductDTO.class);
     }
-
 }
