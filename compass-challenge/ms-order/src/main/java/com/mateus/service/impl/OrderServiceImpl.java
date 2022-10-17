@@ -68,6 +68,15 @@ public class OrderServiceImpl implements OrderService {
         return mapper.map(order, OrderDTO.class);
     }
 
+    @Override
+    public void updateOrder(String order) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        OrderDataProcessingDTO orderProcessing = objectMapper.readValue(order, OrderDataProcessingDTO.class);
+        Order orderUpdate = orderRepository.findById(orderProcessing.getId()).orElseThrow(() -> new RuntimeException());
+        orderUpdate.setStatus(orderProcessing.getStatus());
+        orderRepository.save(orderUpdate);
+    }
+
     protected BigDecimal calculateTotalOrderAmount(List<BigDecimal> productsPrice, List<Integer> productsAmount) {
         BigDecimal total = BigDecimal.valueOf(0);
         for(int i = 0; i < productsPrice.size(); i++) {

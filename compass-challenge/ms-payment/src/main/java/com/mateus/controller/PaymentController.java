@@ -27,10 +27,9 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.findOneByIdAndCpf(id, cpf));
     }
 
-    @RabbitListener(queues = QueueUtils.QUEUE_NAME)
+    @RabbitListener(queues = QueueUtils.ORDER_NOTIFICATION)
     public void processPayment(String order) throws JsonProcessingException {
         paymentService.processPayment(order);
     }
-
 
 }

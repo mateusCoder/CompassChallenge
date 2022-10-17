@@ -12,4 +12,6 @@ public interface OrderService {
     URI save(OrderFormDTO orderFormDTO) throws JsonProcessingException;
 
     OrderDTO findById(Long id);
+
+    void updateOrder(String order) throws JsonProcessingException;
 }

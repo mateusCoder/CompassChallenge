@@ -8,8 +8,10 @@ import com.mateus.domain.dto.OrderDataProcessingDTO;
 import com.mateus.domain.dto.PaymentDTO;
 import com.mateus.repository.PaymentRepository;
 import com.mateus.service.PaymentService;
+import com.mateus.util.QueueUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +22,8 @@ import java.time.LocalDate;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
+
+    private final RabbitTemplate rabbitTemplate;
 
     private final ModelMapper mapper;
 
@@ -38,9 +42,10 @@ public class PaymentServiceImpl implements PaymentService {
         }else{
             orderProcessing.setStatus(Status.PAYMENT_CONFIRMED);
         }
-        System.out.println(orderProcessing);
         savePayment(orderProcessing);
 
+        String response = convertIntoJson(orderProcessing);
+        rabbitTemplate.convertAndSend(QueueUtils.PAYMENT_NOTIFICATION, response);
     }
 
     public void savePayment(OrderDataProcessingDTO orderDataProcessingDTO){
@@ -48,5 +53,10 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setId(null);
         payment.setDate(LocalDate.now());
         paymentRepository.save(payment);
+    }
+
+    protected String convertIntoJson(OrderDataProcessingDTO order) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(order);
     }
 }
