@@ -9,9 +9,15 @@ import org.springframework.data.domain.Pageable;
 import java.net.URI;
 
 public interface OrderService {
+    
     URI save(OrderFormDTO orderFormDTO) throws JsonProcessingException;
+    
+    void updateOrder(String order) throws JsonProcessingException;
+
+    Page<OrderDTO> findByCpf(String cpf, Pageable pageable);
 
     OrderDTO findById(Long id);
 
-    void updateOrder(String order) throws JsonProcessingException;
+    OrderDTO findByOrderNumber(Long orderNumber);
+
 }

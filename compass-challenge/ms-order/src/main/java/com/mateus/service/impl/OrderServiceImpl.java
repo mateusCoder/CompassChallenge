@@ -17,6 +17,9 @@ import com.mateus.util.QueueUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -49,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         List<Integer> productsAmount = orderFormDTO.getOrderProducts().stream()
                 .map(OrderProductsFormDTO::getAmount).toList();
 
-        order.setNumber(orderNumber++);
+        order.setOrderNumber(orderNumber++);
         products.forEach(order::setProducts);
         order.setTotalOrderPrice(calculateTotalOrderAmount(productsPrice, productsAmount));
         order.setLocalDate(LocalDate.now());
@@ -64,15 +67,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO findById(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Order Not Found!"));
-        return mapper.map(order, OrderDTO.class);
+        return mapper.map(orderRepository.findById(id).orElseThrow(() ->
+                new ObjectNotFound("Order Not Found!")), OrderDTO.class);
+    }
+
+    @Override
+    public OrderDTO findByOrderNumber(Long orderNumber) {
+        return mapper.map(orderRepository.findByOrderNumber(orderNumber).orElseThrow(() ->
+                new ObjectNotFound("Order Not Found!")), OrderDTO.class);
+    }
+
+    @Override
+    public Page<OrderDTO> findByCpf(String cpf, Pageable pageable) {
+        Page<Object> orders = orderRepository.findByCpf(cpf, pageable);
+        return orders.map(e -> mapper.map(e, OrderDTO.class));
     }
 
     @Override
     public void updateOrder(String order) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         OrderDataProcessingDTO orderProcessing = objectMapper.readValue(order, OrderDataProcessingDTO.class);
-        Order orderUpdate = orderRepository.findById(orderProcessing.getId()).orElseThrow(() -> new RuntimeException());
+        Order orderUpdate = orderRepository.findById(orderProcessing.getId()).orElseThrow(() -> new ObjectNotFound("Order Not Found!"));
         orderUpdate.setStatus(orderProcessing.getStatus());
         orderRepository.save(orderUpdate);
     }

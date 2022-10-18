@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-@Entity(name = "`ORDER`")
+@Entity(name = "ORDER_DB")
 public class Order implements Serializable {
 
     @Id
@@ -26,7 +26,7 @@ public class Order implements Serializable {
 
     private String cpf;
 
-    private Long number;
+    private Long orderNumber;
 
     @ManyToMany
     private List<Product> products = new ArrayList<>();
