@@ -6,6 +6,7 @@ import com.mateus.domain.Payment;
 import com.mateus.domain.constant.Status;
 import com.mateus.domain.dto.OrderDataProcessingDTO;
 import com.mateus.domain.dto.PaymentDTO;
+import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.PaymentRepository;
 import com.mateus.service.PaymentService;
 import com.mateus.util.QueueUtils;
@@ -29,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentDTO findOneByIdAndCpf(Long id, String cpf) {
-        Payment payment = paymentRepository.findByIdAndCpf(id, cpf).orElseThrow(() -> new RuntimeException());
+        Payment payment = paymentRepository.findByIdAndCpf(id, cpf).orElseThrow(() -> new ObjectNotFound("Payment Not Found!"));
         return mapper.map(payment, PaymentDTO.class);
     }
 

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Builder
-@Entity
+@Entity(name = "PAYMENT_DB")
 public class Payment {
 
     @Id
