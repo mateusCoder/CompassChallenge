@@ -12,7 +12,10 @@ import com.mateus.repository.PaymentRepository;
 import com.mateus.service.PaymentService;
 import com.mateus.util.QueueUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,10 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
+
+    private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     private final PaymentRepository paymentRepository;
 
@@ -31,7 +37,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentDTO findOneByIdAndCpf(Long id, String cpf) {
-        Payment payment = paymentRepository.findByIdAndCpf(id, cpf).orElseThrow(() -> new ObjectNotFound("Payment Not Found!"));
+        Payment payment = paymentRepository.findByIdAndCpf(id, cpf).orElseThrow(() -> {
+            log.error("Error trying to find payment by non-existent id or cpf");
+            throw new ObjectNotFound("Payment Not Found!");
+        });
         return mapper.map(payment, PaymentDTO.class);
     }
 

@@ -9,7 +9,10 @@ import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.ProductRepository;
 import com.mateus.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,10 @@ import java.net.URI;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductServiceImpl implements ProductService {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final ProductRepository productRepository;
 
@@ -31,11 +37,12 @@ public class ProductServiceImpl implements ProductService {
         if (!productRepository.existsByName(productFormPostDTO.getName())){
             product.setActive(true);
             productRepository.save(product);
+            log.info("Product created successfully");
             return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(product.getId());
         }else {
+            log.error("Error when trying to save existing product");
             throw new Conflict("Product already exists");
         }
-
     }
 
     @Override
@@ -46,10 +53,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO update(Long id, ProductFormPutDTO productFormPutDTO) {
-        productRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Product Not Found!"));
+        productRepository.findById(id).orElseThrow(() ->  {
+            log.error("Error when trying to update product");
+            throw new ObjectNotFound("Product Not Found!");
+        });
         Product product = mapper.map(productFormPutDTO, Product.class);
         product.setId(id);
         productRepository.save(product);
+        log.info("Product updated successfully");
         return mapper.map(product, ProductDTO.class);
     }
 }

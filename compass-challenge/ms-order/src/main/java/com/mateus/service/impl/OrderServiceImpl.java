@@ -16,10 +16,12 @@ import com.mateus.repository.ProductRepository;
 import com.mateus.service.OrderService;
 import com.mateus.util.QueueUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,7 +33,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final OrderRepository orderRepository;
 
@@ -48,7 +53,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = mapper.map(orderFormDTO, Order.class);
         List<Product> products = orderFormDTO.getOrderProducts().stream().map(e ->
                 productRepository.findByNameAndActiveTrue(e.getProductsName())
-                        .orElseThrow(() -> new ObjectNotFound("Product Not Found!"))).toList();
+                        .orElseThrow(() -> {
+                            log.error("Error when trying to save order with product not found");
+                            throw new ObjectNotFound("Product Not Found!");
+                        })).toList();
         List<BigDecimal> productsPrice = products.stream().map(Product::getPrice).toList();
         List<Integer> productsAmount = orderFormDTO.getOrderProducts().stream()
                 .map(OrderProductsFormDTO::getAmount).toList();
@@ -63,19 +71,24 @@ public class OrderServiceImpl implements OrderService {
         String response = convertIntoJson(mapper.map(order, OrderDataProcessingDTO.class));
         rabbitTemplate.convertAndSend(QueueUtils.ORDER_NOTIFICATION, response);
 
+        log.info("Order saved and sent successfully");
         return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").build(order.getId());
     }
 
     @Override
     public OrderDTO findById(Long id) {
-        return mapper.map(orderRepository.findById(id).orElseThrow(() ->
-                new ObjectNotFound("Order Not Found!")), OrderDTO.class);
+        return mapper.map(orderRepository.findById(id).orElseThrow(() -> {
+            log.error("Error trying to find order by non-existent id");
+            throw new ObjectNotFound("Product Not Found!");
+        }), OrderDTO.class);
     }
 
     @Override
     public OrderDTO findByOrderNumber(Long orderNumber) {
-        return mapper.map(orderRepository.findByOrderNumber(orderNumber).orElseThrow(() ->
-                new ObjectNotFound("Order Not Found!")), OrderDTO.class);
+        return mapper.map(orderRepository.findByOrderNumber(orderNumber).orElseThrow(() -> {
+            log.error("Error trying to find order by non-existent orderNumber");
+            throw new ObjectNotFound("Product Not Found!");
+        }), OrderDTO.class);
     }
 
     @Override
@@ -88,9 +101,13 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrder(String order) throws BusinessException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         OrderDataProcessingDTO orderProcessing = objectMapper.readValue(order, OrderDataProcessingDTO.class);
-        Order orderUpdate = orderRepository.findById(orderProcessing.getId()).orElseThrow(() -> new ObjectNotFound("Order Not Found!"));
+        Order orderUpdate = orderRepository.findById(orderProcessing.getId()).orElseThrow(() -> {
+            log.error("Error trying to update status order by non-existent id");
+            throw new ObjectNotFound("Product Not Found!");
+        });
         orderUpdate.setStatus(orderProcessing.getStatus());
         orderRepository.save(orderUpdate);
+        log.info("Order status updated successfully");
     }
 
     protected BigDecimal calculateTotalOrderAmount(List<BigDecimal> productsPrice, List<Integer> productsAmount) {
