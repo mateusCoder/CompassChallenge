@@ -1,4 +1,4 @@
-package com.mateus.exception.handler;
+package com.mateus.controller;
 
 import com.mateus.exception.Conflict;
 import com.mateus.exception.ObjectNotFound;
