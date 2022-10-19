@@ -9,6 +9,7 @@ import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderDataProcessingDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.domain.dto.OrderProductsFormDTO;
+import com.mateus.exception.BusinessException;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
 import com.mateus.repository.ProductRepository;
@@ -84,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrder(String order) throws JsonProcessingException {
+    public void updateOrder(String order) throws BusinessException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         OrderDataProcessingDTO orderProcessing = objectMapper.readValue(order, OrderDataProcessingDTO.class);
         Order orderUpdate = orderRepository.findById(orderProcessing.getId()).orElseThrow(() -> new ObjectNotFound("Order Not Found!"));

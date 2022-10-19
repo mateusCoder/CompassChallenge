@@ -3,6 +3,7 @@ package com.mateus.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderFormDTO;
+import com.mateus.exception.BusinessException;
 import com.mateus.service.impl.OrderServiceImpl;
 import com.mateus.util.QueueUtils;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class OrderController {
     }
 
     @RabbitListener(queues = QueueUtils.PAYMENT_NOTIFICATION)
-    public void updateOrder(String order) throws JsonProcessingException {
+    public void updateOrder(String order) throws BusinessException, JsonProcessingException {
         orderService.updateOrder(order);
     }
 }
