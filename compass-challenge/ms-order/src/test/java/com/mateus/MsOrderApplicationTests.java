@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MsOrderApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		MsOrderApplication.main(new String[] {});
 	}
 
 }
