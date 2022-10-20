@@ -7,6 +7,8 @@ import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderDataProcessingDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.domain.dto.OrderProductsFormDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -93,5 +95,13 @@ public class OrderBuilder {
                 .totalOrderPrice(totalOrderPrice)
                 .status(Status.UNAUTHORIZED_PAYMENT)
                 .build();
+    }
+
+    public static Page<Order> getOrderPage(){
+        return new PageImpl<>(List.of(getOrder()));
+    }
+
+    public static Page<OrderDTO> getOrderDtoPage(){
+        return new PageImpl<>(List.of(getOrderDTO()));
     }
 }
