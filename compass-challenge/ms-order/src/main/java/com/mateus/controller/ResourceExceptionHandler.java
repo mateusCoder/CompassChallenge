@@ -18,7 +18,7 @@ import java.time.Instant;
 public class ResourceExceptionHandler {
 
     @ExceptionHandler(ObjectNotFound.class)
-    public ResponseEntity<StandardError> objectNotfound(ObjectNotFound ex,
+    public ResponseEntity<StandardError> objectNotFound(ObjectNotFound ex,
                                                         HttpServletRequest request){
         StandardError error = new StandardError(
                 Instant.now(),
