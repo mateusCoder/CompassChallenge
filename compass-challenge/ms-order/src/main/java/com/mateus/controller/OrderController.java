@@ -1,6 +1,10 @@
 package com.mateus.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mateus.config.annotations.order.GetAllOrderByCpfDocConfig;
+import com.mateus.config.annotations.order.GetOrderByIdDocConfig;
+import com.mateus.config.annotations.order.GetOrderByOrderNumberDocConfig;
+import com.mateus.config.annotations.order.SaveOrderDocConfig;
 import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.exception.BusinessException;
@@ -25,21 +29,25 @@ public class OrderController {
     private final OrderServiceImpl orderService;
 
     @PostMapping
+    @SaveOrderDocConfig
     public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderFormDTO orderFormDTO) throws JsonProcessingException {
         return ResponseEntity.created(orderService.save(orderFormDTO)).build();
     }
 
     @GetMapping("/{id}")
+    @GetOrderByIdDocConfig
     public ResponseEntity<OrderDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(orderService.findById(id));
     }
 
     @GetMapping("/orderNumber/{orderNumber}")
+    @GetOrderByOrderNumberDocConfig
     public ResponseEntity<OrderDTO> findByOrderNumber(@PathVariable Long orderNumber){
         return ResponseEntity.ok(orderService.findByOrderNumber(orderNumber));
     }
 
     @GetMapping("/cpf/{cpf}")
+    @GetAllOrderByCpfDocConfig
     public ResponseEntity<Page<OrderDTO>> findByCpf(@PathVariable String cpf, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         return ResponseEntity.ok(orderService.findByCpf(cpf, pageable));
     }

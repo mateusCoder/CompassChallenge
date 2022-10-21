@@ -1,6 +1,7 @@
-package com.mateus.controller;
+package controller;
 
 import com.mateus.builder.ProductBuilder;
+import com.mateus.controller.ProductController;
 import com.mateus.domain.dto.ProductDTO;
 import com.mateus.domain.dto.ProductFormPostDTO;
 import com.mateus.service.impl.ProductServiceImpl;

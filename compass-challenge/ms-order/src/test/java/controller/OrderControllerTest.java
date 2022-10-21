@@ -1,8 +1,9 @@
-package com.mateus.controller;
+package controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.builder.OrderBuilder;
+import com.mateus.controller.OrderController;
 import com.mateus.domain.dto.OrderDTO;
 import com.mateus.exception.BusinessException;
 import com.mateus.service.impl.OrderServiceImpl;

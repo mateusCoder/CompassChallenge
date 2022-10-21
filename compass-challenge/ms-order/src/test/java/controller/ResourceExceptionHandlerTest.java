@@ -1,5 +1,6 @@
-package com.mateus.controller;
+package controller;
 
+import com.mateus.controller.ResourceExceptionHandler;
 import com.mateus.exception.Conflict;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.exception.StandardError;
