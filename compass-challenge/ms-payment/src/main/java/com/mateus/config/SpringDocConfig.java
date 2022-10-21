@@ -13,7 +13,7 @@ public class SpringDocConfig {
     public OpenAPI openAPI(){
         return new OpenAPI()
                 .info(new Info()
-                        .title("Compass Challenge - Order Microservice")
+                        .title("Compass Challenge - Payment Microservice")
                         .version("v1.0.0")
                         .description("Compass Challenge: Challenge designed to test knowledge")
                 ).externalDocs(new ExternalDocumentation()
