@@ -36,7 +36,7 @@ class PaymentControllerTest {
     }
 
     @Test
-    void findOneByIdAndCpf() {
+    public void findOneByIdAndCpf__WhenSendPaymentIdAndCpfValid_ExpectedResponseEntityPaymentDto() {
         when(paymentService.findOneByIdAndCpf(anyLong(), anyString())).thenReturn(PaymentBuilder.getPaymentDTO());
 
         ResponseEntity<PaymentDTO> response = paymentController.findOneByIdAndCpf(PaymentBuilder.getPayment().getId(),
@@ -48,7 +48,7 @@ class PaymentControllerTest {
     }
 
     @Test
-    void processPayment() throws BusinessException, JsonProcessingException {
+    public void processPayment_WhenListenerOrderValid_ExpectedUpdateOrderStatusById() throws BusinessException, JsonProcessingException {
         doNothing().when(paymentService).processPayment(anyString());
         ObjectMapper objectMapper = new ObjectMapper();
         String order = objectMapper.writeValueAsString(OrderBuilder.getOrderDataProcessingDtoRequest());
