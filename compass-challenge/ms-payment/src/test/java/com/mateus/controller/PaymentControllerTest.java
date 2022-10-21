@@ -51,7 +51,7 @@ class PaymentControllerTest {
     public void processPayment_WhenListenerOrderValid_ExpectedUpdateOrderStatusById() throws BusinessException, JsonProcessingException {
         doNothing().when(paymentService).processPayment(anyString());
         ObjectMapper objectMapper = new ObjectMapper();
-        String order = objectMapper.writeValueAsString(OrderBuilder.getOrderDataProcessingDtoRequest());
+        String order = objectMapper.writeValueAsString(OrderBuilder.getOrderDataProcessingDtoRequestPaymentConfirmed());
 
         paymentController.processPayment(order);
 

@@ -13,25 +13,23 @@ public class OrderBuilder {
 
     private static final Long orderNumber = 1L;
 
-    private static final BigDecimal totalOrderPrice = BigDecimal.valueOf(900);
-
-    public static OrderDataProcessingDTO getOrderDataProcessingDtoRequest(){
+    public static OrderDataProcessingDTO getOrderDataProcessingDtoRequestPaymentConfirmed(){
         return OrderDataProcessingDTO.builder()
                 .id(id)
                 .cpf(cpf)
                 .orderNumber(orderNumber)
-                .totalOrderPrice(totalOrderPrice)
+                .totalOrderPrice(BigDecimal.valueOf(900))
                 .status(Status.ORDER_CREATED)
                 .build();
     }
 
-    public static OrderDataProcessingDTO getOrderDataProcessingDtoUpdated(){
+    public static OrderDataProcessingDTO getOrderDataProcessingDtoRequestUnauthorizedPayment(){
         return OrderDataProcessingDTO.builder()
                 .id(id)
                 .cpf(cpf)
                 .orderNumber(orderNumber)
-                .totalOrderPrice(totalOrderPrice)
-                .status(Status.PAYMENT_CONFIRMED)
+                .totalOrderPrice(BigDecimal.valueOf(1001))
+                .status(Status.ORDER_CREATED)
                 .build();
     }
 
