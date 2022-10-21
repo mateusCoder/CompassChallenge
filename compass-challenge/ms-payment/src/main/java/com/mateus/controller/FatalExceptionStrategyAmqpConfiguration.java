@@ -1,4 +1,4 @@
-package com.mateus.config;
+package com.mateus.controller;
 
 import com.mateus.exception.CustomFatalExceptionStrategy;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;

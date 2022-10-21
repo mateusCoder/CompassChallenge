@@ -1,12 +1,9 @@
-package com.mateus.config;
+package com.mateus.controller;
 
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.exception.StandardError;
-import com.mateus.exception.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
