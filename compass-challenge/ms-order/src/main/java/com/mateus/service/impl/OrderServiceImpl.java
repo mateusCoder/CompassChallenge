@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO findById(Long id) {
         return mapper.map(orderRepository.findById(id).orElseThrow(() -> {
             log.error("Error trying to find order by non-existent id");
-            throw new ObjectNotFound("Product Not Found!");
+            throw new ObjectNotFound("Order Not Found!");
         }), OrderDTO.class);
     }
 
@@ -87,13 +87,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO findByOrderNumber(Long orderNumber) {
         return mapper.map(orderRepository.findByOrderNumber(orderNumber).orElseThrow(() -> {
             log.error("Error trying to find order by non-existent orderNumber");
-            throw new ObjectNotFound("Product Not Found!");
+            throw new ObjectNotFound("Order Not Found!");
         }), OrderDTO.class);
     }
 
     @Override
     public Page<OrderDTO> findByCpf(String cpf, Pageable pageable) {
-        Page<Object> orders = orderRepository.findByCpf(cpf, pageable);
+        Page<Order> orders = orderRepository.findByCpf(cpf, pageable);
         return orders.map(e -> mapper.map(e, OrderDTO.class));
     }
 

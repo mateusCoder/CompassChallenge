@@ -48,7 +48,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void save_WhenSendProductFormPostDtoWithTotalElements_ExpectedNewURI() {
+    public void save_WhenSendProductFormPostDtoWithTotalElements_ExpectedNewURI() {
         MockHttpServletRequest request =new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
@@ -61,7 +61,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void save_WhenSendProductFormPostDtoWithProductExistingName_ExpectedConflictException() {
+    public void save_WhenSendProductFormPostDtoWithProductExistingName_ExpectedConflictException() {
         MockHttpServletRequest request =new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
@@ -75,7 +75,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void findAll_WhenFindAll_ExpectedPageableProductDto() {
+    public void findAll_WhenFindAll_ExpectedPageableProductDto() {
         when(productRepository.findAll((Pageable) any())).thenReturn(ProductBuilder.getProductPage());
 
         Pageable page = PageRequest.of(0, 100);
@@ -86,7 +86,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void update_WhenSendProductFormPutDtoWithTotalElements_ExpectedProductDto() {
+    public void update_WhenSendProductFormPutDtoWithTotalElements_ExpectedProductDto() {
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(ProductBuilder.getProduct()));
         when(productRepository.save(any())).thenReturn(ProductBuilder.getProduct());
 
@@ -99,7 +99,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void update_WhenSendProductFormPutDtoWithAInvalidId_ExpectedObjectNotFoundException() {
+    public void update_WhenSendProductFormPutDtoWithAInvalidId_ExpectedObjectNotFoundException() {
         when(productRepository.save(any())).thenReturn(ProductBuilder.getProduct());
 
         ObjectNotFound response = assertThrows(ObjectNotFound.class, () ->

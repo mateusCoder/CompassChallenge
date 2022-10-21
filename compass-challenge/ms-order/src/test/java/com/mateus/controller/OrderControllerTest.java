@@ -38,9 +38,6 @@ class OrderControllerTest {
     @Mock
     OrderServiceImpl orderService;
 
-    @Mock
-    ObjectMapper objectMapper;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -102,7 +99,8 @@ class OrderControllerTest {
     @Test
     public void updateOrder_WhenListenerOrderValid_ExpectedUpdateOrderStatusById() throws BusinessException, JsonProcessingException {
         doNothing().when(orderService).updateOrder(any());
-        String order = objectMapper.writeValueAsString(OrderBuilder.getOrder());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String order = objectMapper.writeValueAsString(OrderBuilder.getOrderDataProcessingDTORequest());
 
         orderController.updateOrder(order);
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    Optional<Object> findByOrderNumber(Long orderNumber);
+    Optional<Order> findByOrderNumber(Long orderNumber);
 
-    Page<Object> findByCpf(String cpf, Pageable pageable);
+    Page<Order> findByCpf(String cpf, Pageable pageable);
 }
