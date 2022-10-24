@@ -2,59 +2,57 @@ package com.mateus.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mateus.builder.OrderBuilder;
 import com.mateus.builder.PaymentBuilder;
-import com.mateus.domain.dto.PaymentDTO;
-import com.mateus.exception.BusinessException;
-import com.mateus.service.impl.PaymentServiceImpl;
+import com.mateus.domain.Payment;
+import com.mateus.exception.ObjectNotFound;
+import com.mateus.repository.PaymentRepository;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
-@AutoConfigureTestDatabase
+@SpringBootTest
+@AutoConfigureMockMvc()
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class PaymentControllerTest {
 
-    @InjectMocks
-    PaymentController paymentController;
+    private final MockMvc mockMvc;
 
-    @Mock
-    PaymentServiceImpl paymentService;
+    private final PaymentRepository paymentRepository;
+
+    private final ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        Payment payment = paymentRepository.save(PaymentBuilder.getPayment());
+
     }
 
     @Test
-    public void findOneByIdAndCpf__WhenSendPaymentIdAndCpfValid_ExpectedResponseEntityPaymentDto() {
-        when(paymentService.findOneByIdAndCpf(anyLong(), anyString())).thenReturn(PaymentBuilder.getPaymentDTO());
-
-        ResponseEntity<PaymentDTO> response = paymentController.findOneByIdAndCpf(PaymentBuilder.getPayment().getId(),
-                PaymentBuilder.getPayment().getCpf());
-
-        assertNotNull(response);
-        assertEquals(ResponseEntity.class, response.getClass());
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+    void findOneByIdAndCpf__WhenSendPaymentIdAndCpfValid_ExpectedResponseEntityPaymentDto() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/client/{cpf}", 1L, "461.912.588-10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(Assertions::assertNotNull)
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void processPayment_WhenListenerOrderValid_ExpectedUpdateOrderStatusById() throws BusinessException, JsonProcessingException {
-        doNothing().when(paymentService).processPayment(anyString());
-        ObjectMapper objectMapper = new ObjectMapper();
-        String order = objectMapper.writeValueAsString(OrderBuilder.getOrderDataProcessingDtoRequestPaymentConfirmed());
-
-        paymentController.processPayment(order);
-
-        verify(paymentService, times(1)).processPayment(order);
+    public void findByOrderNumber_WhenSendPaymentIdAndCpfNonExistent_ExpectedObjectNotFoundException() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/client/{cpf}", 2L, "461.912.588-10"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
+                .andDo(MockMvcResultHandlers.print());
     }
+
 }
