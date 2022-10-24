@@ -48,11 +48,6 @@ class ProductControllerTest {
         productRepository.save(ProductBuilder.getProduct());
     }
 
-    @AfterEach
-    void setDown() {
-        productRepository.deleteAll();
-    }
-
     @Test
     public void save_WhenSendProductFormPostDtoWithTotalElements_ExpectedResponseEntityProductDto() throws Exception {
         String productRequest = objectMapper.writeValueAsString(
@@ -65,6 +60,20 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    public void save_WhenSendProductFormPostDtoWithMissingElements_ExpectedBadRequestException()  throws Exception {
+        String productRequest = objectMapper.writeValueAsString(
+                new ProductFormPostDTO("", "Pote 1L transparente plastico",
+                        BigDecimal.valueOf(10)));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productRequest))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -93,7 +102,7 @@ class ProductControllerTest {
     void update_WhenSendProductFormPutDtoWithTotalElements_ExpectedResponseEntityProductDto() throws Exception {
         productRepository.save(ProductBuilder.getProduct());
         String productRequest = objectMapper.writeValueAsString(ProductBuilder.getProductFormPutDTO());
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/products/{id}", 6L)
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/products/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequest))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -104,7 +113,7 @@ class ProductControllerTest {
     public void update_WhenSendProductFormPutDtoWithAInvalidId_ExpectedObjectNotFoundException() throws Exception {
         String productRequest = objectMapper.writeValueAsString(ProductBuilder.getProductFormPutDTO());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/products/{id}", 3L)
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/products/{id}", 10L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequest))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -113,7 +122,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void update_WhenSendProductFormPutDtoWithMissingElements_ExpectedObjectNotFoundException() throws Exception {
+    public void update_WhenSendProductFormPutDtoWithMissingElements_ExpectedBadRequestException() throws Exception {
         String productRequest = objectMapper.writeValueAsString(
                 new ProductFormPutDTO("", "Pote 1L transparente plastico",
                 BigDecimal.valueOf(10), true));
@@ -125,4 +134,5 @@ class ProductControllerTest {
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
                 .andDo(MockMvcResultHandlers.print());
     }
+
 }
