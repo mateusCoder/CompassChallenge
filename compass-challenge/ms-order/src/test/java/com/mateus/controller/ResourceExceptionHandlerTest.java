@@ -1,4 +1,4 @@
-package controller;
+package com.mateus.controller;
 
 import com.mateus.controller.ResourceExceptionHandler;
 import com.mateus.exception.Conflict;
