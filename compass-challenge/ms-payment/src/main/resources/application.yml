@@ -12,15 +12,15 @@ spring:
     password: postgres
     url: jdbc:postgresql://localhost:5432/payment
     username: postgres
-    jpa:
-      defer-datasource-initialization: true
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQL81Dialect
-          format_sql: true
-      show-sql: true
-  mq:
-    queues:
-      order-creation: order-creation
+        dialect: org.hibernate.dialect.PostgreSQL81Dialect
+        format_sql: true
+    show-sql: true
+mq:
+  queues:
+    order-creation: order-creation
