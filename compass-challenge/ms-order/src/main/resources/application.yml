@@ -5,19 +5,20 @@ spring:
     username: rabbitmq
     password: rabbitmq
   datasource:
-    driverClassName: org.h2.Driver
-    password: ''
-    url: jdbc:h2:mem:devs-ms-order
-    username: sa
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    driverClassName: org.postgresql.Driver
+    initialization-mode: always
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/order
+    username: postgres
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+        ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL81Dialect
+        format_sql: true
+    show-sql: true
 mq:
   queues:
     order-creation: order-creation
