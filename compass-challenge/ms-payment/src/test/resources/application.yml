@@ -1,9 +1,6 @@
 spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: rabbitmq
-    password: rabbitmq
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.amqp.MQConfig
   datasource:
     driverClassName: org.h2.Driver
     password: ''
@@ -18,6 +15,3 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
-mq:
-  queues:
-    order-creation: order-creation

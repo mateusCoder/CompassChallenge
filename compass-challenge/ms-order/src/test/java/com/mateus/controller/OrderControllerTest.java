@@ -18,6 +18,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +35,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest
 @AutoConfigureMockMvc()
@@ -47,27 +51,15 @@ class OrderControllerTest {
 
     private final ObjectMapper objectMapper;
 
+    @Mock
+    RabbitTemplate rabbitTemplate;
+
     @BeforeEach
     void setUp() {
         Product product = productRepository.save(new Product(7L, "Super Cooler",
                 "Cooler 30L", BigDecimal.valueOf(322), true));
         Order order = orderRepository.save(new Order(null, "461.912.588-10", null, List.of(product), product.getPrice(),
                 LocalDate.now(), Status.ORDER_CREATED));
-    }
-
-    @Test
-    public void save_WhenSendOrderFormDtoWithTotalElements_ExpectedResponseEntityOrderDto() throws Exception {
-        Product product = productRepository.save(new Product(8L, "Isopor Térmico",
-                "Caixa de Isopor 50L", BigDecimal.valueOf(322), true));
-
-        String orderRequest = objectMapper.writeValueAsString(new OrderFormDTO("461.912.588-10",
-                List.of(new OrderProductsFormDTO(product.getName(), 1))));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(orderRequest))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

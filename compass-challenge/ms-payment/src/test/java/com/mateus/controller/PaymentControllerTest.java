@@ -1,6 +1,5 @@
 package com.mateus.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.builder.PaymentBuilder;
 import com.mateus.domain.Payment;
@@ -18,10 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc()
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -31,12 +26,12 @@ class PaymentControllerTest {
 
     private final PaymentRepository paymentRepository;
 
+
     private final ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         Payment payment = paymentRepository.save(PaymentBuilder.getPayment());
-
     }
 
     @Test
