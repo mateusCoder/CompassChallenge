@@ -10,7 +10,7 @@ public class PaymentBuilder {
 
     private static final Long id = 1L;
 
-    private static final Long orderNumber = 1L;
+    private static final String orderNumber = "46a3eb49-72ae-4e51-afdf-686e395f2b17";
 
     private static final String cpf = "461.912.588-10";
 

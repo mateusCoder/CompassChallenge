@@ -22,7 +22,7 @@ public class OrderDTO {
 
     private String cpf;
 
-    private Long orderNumber;
+    private String orderNumber;
 
     private List<Product> products;
 

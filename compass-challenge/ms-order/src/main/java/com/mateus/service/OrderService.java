@@ -19,6 +19,6 @@ public interface OrderService {
 
     OrderDTO findById(Long id);
 
-    OrderDTO findByOrderNumber(Long orderNumber);
+    OrderDTO findByOrderNumber(String orderNumber);
 
 }

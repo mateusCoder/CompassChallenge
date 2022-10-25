@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -46,8 +47,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    private Long orderNumber = 1L;
-
     @Override
     public URI save(OrderFormDTO orderFormDTO) throws JsonProcessingException {
         Order order = mapper.map(orderFormDTO, Order.class);
@@ -61,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         List<Integer> productsAmount = orderFormDTO.getOrderProducts().stream()
                 .map(OrderProductsFormDTO::getAmount).toList();
 
-        order.setOrderNumber(orderNumber++);
+        order.setOrderNumber(UUID.randomUUID().toString());
         products.forEach(order::setProducts);
         order.setTotalOrderPrice(calculateTotalOrderAmount(productsPrice, productsAmount));
         order.setLocalDate(LocalDate.now());
@@ -84,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO findByOrderNumber(Long orderNumber) {
+    public OrderDTO findByOrderNumber(String orderNumber) {
         return mapper.map(orderRepository.findByOrderNumber(orderNumber).orElseThrow(() -> {
             log.error("Error trying to find order by non-existent orderNumber");
             throw new ObjectNotFound("Order Not Found!");

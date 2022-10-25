@@ -42,7 +42,7 @@ public class OrderController {
 
     @GetMapping("/orderNumber/{orderNumber}")
     @GetOrderByOrderNumberDocConfig
-    public ResponseEntity<OrderDTO> findByOrderNumber(@PathVariable Long orderNumber){
+    public ResponseEntity<OrderDTO> findByOrderNumber(@PathVariable String orderNumber){
         return ResponseEntity.ok(orderService.findByOrderNumber(orderNumber));
     }
 

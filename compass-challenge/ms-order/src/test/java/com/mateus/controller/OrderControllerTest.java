@@ -106,7 +106,7 @@ class OrderControllerTest {
 
     @Test
     public void findById_WhenSendOrderIdNonExistent_ExpectedObjectNotFoundException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/{id}", 10L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/{id}", 20L))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
                 .andDo(MockMvcResultHandlers.print());
@@ -115,7 +115,7 @@ class OrderControllerTest {
 
     @Test
     public void findByOrderNumber_WhenSendOrderNumberNonExistent_ExpectedObjectNotFoundException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/orderNumber/{orderNumber}", 10L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/orderNumber/{orderNumber}", "10"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
                 .andDo(MockMvcResultHandlers.print());
@@ -123,9 +123,15 @@ class OrderControllerTest {
 
     @Test
     public void findByOrderNumber_WhenSendOrderNumberValid_ExpectedResponseEntityOrderDto() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/orderNumber/{orderNumber}", 1L))
+        Order order = orderRepository.save(new Order(null, "461.912.588-10",
+                "fda02b10-a8f7-4df7-99a6-802edefd5624",
+                List.of(ProductBuilder.getProduct()),
+                ProductBuilder.getProduct().getPrice(),
+                LocalDate.now(), Status.ORDER_CREATED));
+        orderRepository.save(order);
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/orderNumber/{orderNumber}",
+                        "fda02b10-a8f7-4df7-99a6-802edefd5624"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(Assertions::assertNotNull)
                 .andDo(MockMvcResultHandlers.print());
     }
 

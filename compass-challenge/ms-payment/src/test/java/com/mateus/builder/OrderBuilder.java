@@ -11,7 +11,7 @@ public class OrderBuilder {
 
     private static final String cpf = "461.912.588-10";
 
-    private static final Long orderNumber = 1L;
+    private static final String orderNumber = "46a3eb49-72ae-4e51-afdf-686e395f2b17";
 
     public static OrderDataProcessingDTO getOrderDataProcessingDtoRequestPaymentConfirmed(){
         return OrderDataProcessingDTO.builder()

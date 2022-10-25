@@ -17,7 +17,7 @@ public class PaymentDTO {
 
     private Long id;
 
-    private Long orderNumber;
+    private String orderNumber;
 
     private String cpf;
 

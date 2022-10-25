@@ -113,9 +113,9 @@ class OrderServiceImplTest {
 
     @Test
     public void findByOrderNumber_WhenSendOrderNumberValid_OrderDto() {
-        when(orderRepository.findByOrderNumber(anyLong())).thenReturn(Optional.of(OrderBuilder.getOrder()));
+        when(orderRepository.findByOrderNumber(anyString())).thenReturn(Optional.of(OrderBuilder.getOrder()));
 
-        OrderDTO response = orderService.findByOrderNumber(OrderBuilder.getOrder().getId());
+        OrderDTO response = orderService.findByOrderNumber(OrderBuilder.getOrder().getOrderNumber());
 
         assertNotNull(response);
         assertEquals(OrderDTO.class, response.getClass());
@@ -125,7 +125,7 @@ class OrderServiceImplTest {
     @Test
     public void findByOrderNumber_WhenSendOrderNumberInvalid_ExpectedObjectNotFoundException() {
         ObjectNotFound response = assertThrows(ObjectNotFound.class, () ->
-                orderService.findByOrderNumber(OrderBuilder.getOrder().getId()));
+                orderService.findByOrderNumber(OrderBuilder.getOrder().getOrderNumber()));
 
         assertEquals("Order Not Found!", response.getMessage());
     }

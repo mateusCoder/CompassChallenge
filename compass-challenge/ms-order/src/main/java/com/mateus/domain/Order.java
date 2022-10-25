@@ -26,7 +26,7 @@ public class Order implements Serializable {
 
     private String cpf;
 
-    private Long orderNumber;
+    private String orderNumber;
 
     @ManyToMany
     private List<Product> products = new ArrayList<>();

@@ -20,7 +20,7 @@ public class OrderDataProcessingDTO implements Serializable {
 
     private String cpf;
 
-    private Long orderNumber;
+    private String orderNumber;
 
     private BigDecimal totalOrderPrice;
 
