@@ -1,0 +1,17 @@
+{
+	"ulid": "01GG888SVED69XYSA8HVBF5DRZ",
+	"minTime": 1666713608528,
+	"maxTime": 1666720800000,
+	"stats": {
+		"numSamples": 292800,
+		"numSeries": 610,
+		"numChunks": 2440
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01GG888SVED69XYSA8HVBF5DRZ"
+		]
+	},
+	"version": 1
+}

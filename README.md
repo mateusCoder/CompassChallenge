@@ -39,6 +39,7 @@
 O projeto possui suporte as seguintes tarefas:
 
 - [x] Mensageria com RabbitMQ
+- [x] Log da Aplicação
 - [x] Documentação com Swagger
 - [x] Observabilidade com Grafana
 
@@ -123,6 +124,10 @@ Para acessar a documentação Compass Challenge:
 1. []()Verifique que os microserviços Order e Payment estão sendo executados
 2. Para visualizar a documentação, acesse: [Ms-Order](http://localhost:8080/swagger-ui/index.html#/)
 3. Para visualizar a documentação, acesse: [Ms-Payment](http://localhost:8090/swagger-ui/index.html#/)
+
+
+## 💾 Log ##
+Para acessar os Logs, basta executar a aplicação, após isso serão salvos arquivos de Log dentro da pasta temp do seu usuário. 
 
 
 ## 📌 EndPoints
@@ -216,7 +221,7 @@ Foram usadas as seguintes tecnologias e ferramentas para a construção da API:
 
 ## 🎬📽 Apresentação
 
-A gravação da apresentação do desafio está disponível no <a href=" " target="_blank" rel="noreferrer" rel="noopener"> link </a>.
+A gravação da apresentação do desafio está disponível no <a href="https://compasso-my.sharepoint.com/:v:/g/personal/mateus_moraes_compasso_com_br/EXbGPm5DjBRGjFkKtlpCrywBGN_WuK322MsKTvWps-hhig?email=mateus.moraes%40compasso.com.br" target="_blank" rel="noreferrer" rel="noopener"> link </a>.
 
 
 
