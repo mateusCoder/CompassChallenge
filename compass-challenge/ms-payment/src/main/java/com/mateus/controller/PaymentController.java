@@ -24,7 +24,7 @@ public class PaymentController {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @GetMapping("/{id}/client/{cpf}")
+    @GetMapping("/{id}/customer/{cpf}")
     @GetPaymentByIdAndCpfDocConfig
     public ResponseEntity<PaymentDTO> findOneByIdAndCpf(@PathVariable Long id, @PathVariable String cpf){
         return ResponseEntity.ok(paymentService.findOneByIdAndCpf(id, cpf));

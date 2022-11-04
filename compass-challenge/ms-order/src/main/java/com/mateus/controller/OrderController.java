@@ -46,7 +46,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findByOrderNumber(orderNumber));
     }
 
-    @GetMapping("/cpf/{cpf}")
+    @GetMapping("/customer/{cpf}")
     @GetAllOrderByCpfDocConfig
     public ResponseEntity<Page<OrderDTO>> findByCpf(@PathVariable String cpf, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         return ResponseEntity.ok(orderService.findByCpf(cpf, pageable));

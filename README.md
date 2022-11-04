@@ -134,21 +134,21 @@ Para acessar os Logs, basta executar a aplicação, após isso serão salvos arq
 
 ><div align="center"> Microserviço Order </div>
 
-| Entidade | Método | EndPoint                  | Description                                                     |
-|----------|--------|---------------------------|-----------------------------------------------------------------|
-| Produto  | GET    | /v1/products              | Lista todos os produtos cadastrados                             |
-| Produto  | POST   | /v1/products              | Cadastra um novo produto                                        |
-| Produto  | PUT    | /v1/products/{product_id} | Atualiza o cadastro de um produto existente pelo ID             |
-| Pedido   | POST   | /v1/orders                | Cadastra um novo pedido                                         |
-| Pedido   | GET    | /v1/orders/{order_id}     | Detalha o cadastro de um pedido existente pelo ID               |
-| Pedido   | GET    | /v1/orders/{order_number} | Detalha o cadastro de um pedido existente pelo número do Pedido |
-| Pedido   | GET    | /v1/orders/{order_cpf}    | Lista todos os pedidos cadastrados pelo cpf                     |
+| Entidade | Método | EndPoint                             | Description                                                     |
+|----------|--------|--------------------------------------|-----------------------------------------------------------------|
+| Produto  | GET    | /v1/products                         | Lista todos os produtos cadastrados                             |
+| Produto  | POST   | /v1/products                         | Cadastra um novo produto                                        |
+| Produto  | PUT    | /v1/products/{id}                    | Atualiza o cadastro de um produto existente pelo ID             |
+| Pedido   | POST   | /v1/orders                           | Cadastra um novo pedido                                         |
+| Pedido   | GET    | /v1/orders/{id}                      | Detalha o cadastro de um pedido existente pelo ID               |
+| Pedido   | GET    | /v1/orders/orderNumber/{orderNumber} | Detalha o cadastro de um pedido existente pelo número do Pedido |
+| Pedido   | GET    | /v1/orders/customer/{cpf}            | Lista todos os pedidos cadastrados pelo cpf do cliente          |
 
 
 ><div align="center"> Microserviço Payment </div>
-| Entidade  | Método | EndPoint                                       | Description                                   |
-|-----------|--------|------------------------------------------------|-----------------------------------------------|
-| Pagamento | GET    | /v1/payments/{payment_id}/client/{payment_cpf} | Detalha um pagamento cadastrado pelo ID e CPF |
+| Entidade  | Método | EndPoint                           | Description                                   |
+|-----------|--------|------------------------------------|-----------------------------------------------|
+| Pagamento | GET    | /v1/payments/{id}/customer/{cpf}   | Detalha um pagamento cadastrado pelo ID e CPF |
 
 
 ><div align="center"> Observabilidade Grafana </div>

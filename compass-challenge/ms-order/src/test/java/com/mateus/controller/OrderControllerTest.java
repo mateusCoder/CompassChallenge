@@ -130,7 +130,7 @@ class OrderControllerTest {
 
     @Test
     public void findByCpf_WhenSendCpfValid_ExpectedResponseEntityOrderDto() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/cpf/{cpf}", "461.912.588-10"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/customer/{cpf}", "461.912.588-10"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(Assertions::assertNotNull)
                 .andDo(MockMvcResultHandlers.print());

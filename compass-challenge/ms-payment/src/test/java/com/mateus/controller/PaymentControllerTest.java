@@ -36,7 +36,7 @@ class PaymentControllerTest {
 
     @Test
     void findOneByIdAndCpf__WhenSendPaymentIdAndCpfValid_ExpectedResponseEntityPaymentDto() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/client/{cpf}", 1L, "461.912.588-10"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/customer/{cpf}", 1L, "461.912.588-10"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(Assertions::assertNotNull)
                 .andDo(MockMvcResultHandlers.print());
@@ -44,7 +44,7 @@ class PaymentControllerTest {
 
     @Test
     public void findByOrderNumber_WhenSendPaymentIdAndCpfNonExistent_ExpectedObjectNotFoundException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/client/{cpf}", 2L, "461.912.588-10"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/customer/{cpf}", 2L, "461.912.588-10"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
                 .andDo(MockMvcResultHandlers.print());
