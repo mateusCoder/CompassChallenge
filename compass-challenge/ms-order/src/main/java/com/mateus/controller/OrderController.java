@@ -10,7 +10,9 @@ import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.exception.BusinessException;
 import com.mateus.service.impl.OrderServiceImpl;
 import com.mateus.util.QueueUtils;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,25 +32,33 @@ public class OrderController {
 
     @PostMapping
     @SaveOrderDocConfig
-    public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderFormDTO orderFormDTO) throws JsonProcessingException {
+    public ResponseEntity<OrderDTO> save(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "A request to create a new order") @Valid @RequestBody OrderFormDTO orderFormDTO)
+            throws JsonProcessingException {
         return ResponseEntity.created(orderService.save(orderFormDTO)).build();
     }
 
     @GetMapping("/{id}")
     @GetOrderByIdDocConfig
-    public ResponseEntity<OrderDTO> findById(@PathVariable Long id){
+    public ResponseEntity<OrderDTO> findById(@Parameter(description = "id of order to be searched")
+                                                 @PathVariable Long id){
         return ResponseEntity.ok(orderService.findById(id));
     }
 
     @GetMapping("/orderNumber/{orderNumber}")
     @GetOrderByOrderNumberDocConfig
-    public ResponseEntity<OrderDTO> findByOrderNumber(@PathVariable String orderNumber){
+    public ResponseEntity<OrderDTO> findByOrderNumber(@Parameter(description = "number of order to be searched")
+                                                          @PathVariable String orderNumber){
         return ResponseEntity.ok(orderService.findByOrderNumber(orderNumber));
     }
 
     @GetMapping("/customer/{cpf}")
     @GetAllOrderByCpfDocConfig
-    public ResponseEntity<Page<OrderDTO>> findByCpf(@PathVariable String cpf, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+    public ResponseEntity<Page<OrderDTO>> findByCpf(@Parameter(description = "cpf of customer to be searched")
+                                                        @PathVariable String cpf,
+                                                    @ParameterObject
+                                                    @PageableDefault(sort = "id", direction = Sort.Direction.ASC)
+                                                    Pageable pageable){
         return ResponseEntity.ok(orderService.findByCpf(cpf, pageable));
     }
 

@@ -6,6 +6,7 @@ import com.mateus.domain.dto.PaymentDTO;
 import com.mateus.exception.BusinessException;
 import com.mateus.service.impl.PaymentServiceImpl;
 import com.mateus.util.QueueUtils;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,7 +27,10 @@ public class PaymentController {
 
     @GetMapping("/{id}/customer/{cpf}")
     @GetPaymentByIdAndCpfDocConfig
-    public ResponseEntity<PaymentDTO> findOneByIdAndCpf(@PathVariable Long id, @PathVariable String cpf){
+    public ResponseEntity<PaymentDTO> findOneByIdAndCpf(@Parameter(description = "id of order to be searched")
+                                                            @PathVariable Long id,
+                                                        @Parameter(description = "cpf of customer to be searched")
+                                                            @PathVariable String cpf){
         return ResponseEntity.ok(paymentService.findOneByIdAndCpf(id, cpf));
     }
 

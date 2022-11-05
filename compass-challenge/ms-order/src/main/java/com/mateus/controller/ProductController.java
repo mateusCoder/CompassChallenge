@@ -7,8 +7,10 @@ import com.mateus.domain.dto.ProductDTO;
 import com.mateus.domain.dto.ProductFormPostDTO;
 import com.mateus.domain.dto.ProductFormPutDTO;
 import com.mateus.service.impl.ProductServiceImpl;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,20 +31,24 @@ public class ProductController {
 
     @PostMapping
     @SaveProductDocConfig
-    public ResponseEntity<ProductDTO> save(@Valid @RequestBody ProductFormPostDTO productFormPostDTO){
+    public ResponseEntity<ProductDTO> save(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "A request to create a new product") @Valid @RequestBody ProductFormPostDTO productFormPostDTO){
         return ResponseEntity.created(productService.save(productFormPostDTO)).build();
     }
 
     @GetMapping
     @GetAllProductDocConfig
-    public ResponseEntity<Page<ProductDTO>> findAll(@PageableDefault(sort = "active", direction = Sort.Direction.DESC)
-                                                        Pageable page){
+    public ResponseEntity<Page<ProductDTO>> findAll(@ParameterObject @PageableDefault(sort = "active",
+            direction = Sort.Direction.DESC) Pageable page){
         return ResponseEntity.ok(productService.findAll(page));
     }
 
     @PutMapping("/{id}")
     @UpdateProductDocConfig
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductFormPutDTO productFormPutDTO){
+    public ResponseEntity<ProductDTO> update(@Parameter(description = "id of order to be searched") @PathVariable Long id,
+                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                     description = "A request to update an existing product")
+                                             @Valid @RequestBody ProductFormPutDTO productFormPutDTO){
         return ResponseEntity.ok(productService.update(id, productFormPutDTO));
     }
 }
