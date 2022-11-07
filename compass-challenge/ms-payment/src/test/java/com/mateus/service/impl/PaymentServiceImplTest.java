@@ -50,7 +50,7 @@ class PaymentServiceImplTest {
     }
 
     @Test
-    void findOneByIdAndCpf__WhenSendPaymentIdAndCpfValid_ExpectedPaymentDto() {
+    void findOneByIdAndCpf_WhenSendPaymentIdAndCpfValid_ExpectedPaymentDto() {
         when(paymentRepository.findByIdAndCpf(anyLong(), anyString())).
                 thenReturn(Optional.of(PaymentBuilder.getPayment()));
 
@@ -63,7 +63,7 @@ class PaymentServiceImplTest {
     }
 
     @Test
-    void findOneByIdAndCpf__WhenSendPaymentIdAndCpfInvalid_ExpectedObjectNotFoundException() {
+    void findOneByIdAndCpf_WhenSendPaymentIdAndCpfInvalid_ExpectedObjectNotFoundException() {
         ObjectNotFound response = assertThrows(ObjectNotFound.class, () ->
                 paymentService.findOneByIdAndCpf(PaymentBuilder.getPaymentDTO().getId(),
                         PaymentBuilder.getPayment().getCpf()));

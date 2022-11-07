@@ -15,6 +15,7 @@ import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
 import com.mateus.repository.ProductRepository;
 import com.mateus.service.OrderService;
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -32,6 +34,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,7 +83,7 @@ class OrderServiceImplTest {
     }
 
     @Test
-    public void save_WhenSendOrderFormDtoWithProductNameInvalid_ExpectedOrderDto() throws JsonProcessingException {
+    public void save_WhenSendOrderFormDtoWithProductNameInvalid_ExpectedObjectNotFoundException() throws JsonProcessingException {
         MockHttpServletRequest request =new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
@@ -139,6 +143,16 @@ class OrderServiceImplTest {
 
         assertNotNull(response);
         assertEquals(1, response.getTotalElements());
+    }
+
+    @Test
+    public void findByCpf_WhenSendCpfValid_ExpectedEmptyPage() {
+        when(orderRepository.findByCpf(anyString(), (Pageable) any())).thenReturn(new PageImpl<>(Collections.EMPTY_LIST));
+
+        Pageable page = PageRequest.of(0, 100);
+        Page<OrderDTO> response = orderService.findByCpf("4", page);
+
+        assertEquals(0, response.getNumberOfElements());
     }
 
 

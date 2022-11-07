@@ -3,6 +3,7 @@ package com.mateus.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.builder.OrderBuilder;
 import com.mateus.builder.ProductBuilder;
+import com.mateus.config.MQConfig;
 import com.mateus.domain.Order;
 import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
@@ -13,12 +14,15 @@ import com.mateus.domain.dto.ProductFormPutDTO;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
 import com.mateus.repository.ProductRepository;
+import com.mateus.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,6 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc()
@@ -52,10 +57,12 @@ class OrderControllerTest {
     private final ObjectMapper objectMapper;
 
     @Mock
-    RabbitTemplate rabbitTemplate;
+    OrderServiceImpl orderService;
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
+
         Product product = productRepository.save(new Product(7L, "Super Cooler",
                 "Cooler 30L", BigDecimal.valueOf(322), true));
         Order order = orderRepository.save(new Order(null, "461.912.588-10", null, List.of(product), product.getPrice(),

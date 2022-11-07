@@ -1,8 +1,10 @@
 package com.mateus.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.builder.PaymentBuilder;
 import com.mateus.domain.Payment;
+import com.mateus.exception.BusinessException;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,14 @@ class PaymentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/customer/{cpf}", 2L, "461.912.588-10"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void processPayment() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/payments/{id}/customer/{cpf}", 1L, "461.912.588-10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(Assertions::assertNotNull)
                 .andDo(MockMvcResultHandlers.print());
     }
 
