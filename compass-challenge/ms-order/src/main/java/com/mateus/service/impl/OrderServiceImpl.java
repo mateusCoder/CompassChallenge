@@ -63,7 +63,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderNumber(UUID.randomUUID().toString());
         products.forEach(order::setProducts);
         order.setTotalOrderPrice(calculateTotalOrderAmount(productsPrice, productsAmount));
-        order.setLocalDate(LocalDate.now());
         order.setStatus(Status.ORDER_CREATED);
         orderRepository.save(order);
 

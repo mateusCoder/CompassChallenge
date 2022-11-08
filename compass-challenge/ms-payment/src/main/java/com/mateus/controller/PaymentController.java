@@ -6,14 +6,17 @@ import com.mateus.domain.dto.PaymentDTO;
 import com.mateus.exception.BusinessException;
 import com.mateus.service.impl.PaymentServiceImpl;
 import com.mateus.util.QueueUtils;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,13 +28,14 @@ public class PaymentController {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @GetMapping("/{id}/customer/{cpf}")
+    @GetMapping
     @GetPaymentByIdAndCpfDocConfig
-    public ResponseEntity<PaymentDTO> findOneByIdAndCpf(@Parameter(description = "id of order to be searched")
-                                                            @PathVariable Long id,
-                                                        @Parameter(description = "cpf of customer to be searched")
-                                                            @PathVariable String cpf){
-        return ResponseEntity.ok(paymentService.findOneByIdAndCpf(id, cpf));
+    public ResponseEntity<Page<PaymentDTO>> findByIdOrCpf(@RequestParam(value = "id", required = false) Long id,
+                                                          @RequestParam(value = "cpf", required = false) String cpf,
+                                                          @PageableDefault(
+                                                                  sort = "id",
+                                                                  size = 50)  Pageable pageable){
+        return ResponseEntity.ok(paymentService.findByIdOrCpf(id, cpf, pageable));
     }
 
     @RabbitListener(queues = QueueUtils.ORDER_NOTIFICATION)

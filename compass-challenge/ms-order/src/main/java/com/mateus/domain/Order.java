@@ -41,4 +41,9 @@ public class Order implements Serializable {
     public void setProducts(Product product) {
         this.products.add(product);
     }
+
+    @PrePersist
+    public void setDate(){
+        localDate = LocalDate.now();
+    }
 }

@@ -3,8 +3,11 @@ package com.mateus.builder;
 import com.mateus.domain.Payment;
 import com.mateus.domain.constant.Status;
 import com.mateus.domain.dto.PaymentDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class PaymentBuilder {
 
@@ -38,4 +41,11 @@ public class PaymentBuilder {
                 .build();
     }
 
+    public static Page<Payment> getPaymentPageable(){
+        return new PageImpl<>(List.of(getPayment()));
+    }
+
+    public static Page<PaymentDTO> getPaymentDTOPageable(){
+        return new PageImpl<>(List.of(getPaymentDTO()));
+    }
 }

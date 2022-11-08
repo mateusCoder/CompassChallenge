@@ -28,4 +28,9 @@ public class Payment {
     private Status status;
 
     private LocalDate date;
+
+    @PrePersist
+    public void setDate(){
+        date = LocalDate.now();
+    }
 }

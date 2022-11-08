@@ -8,7 +8,8 @@ import com.mateus.domain.Payment;
 import com.mateus.domain.dto.PaymentDTO;
 import com.mateus.exception.BusinessException;
 import com.mateus.exception.ObjectNotFound;
-import com.mateus.repository.PaymentRepository;
+import com.mateus.repository.PaymentRepositorySpec;
+import com.mateus.specification.PaymentSpec;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,9 +20,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,10 +40,13 @@ class PaymentServiceImplTest {
     PaymentServiceImpl paymentService;
 
     @Mock
-    PaymentRepository paymentRepository;
+    PaymentRepositorySpec paymentRepository;
 
     @Mock
     RabbitTemplate rabbitTemplate;
+
+    @Mock
+    PaymentSpec paymentSpec;
 
     @Spy
     ModelMapper mapper;
@@ -50,25 +57,81 @@ class PaymentServiceImplTest {
     }
 
     @Test
-    void findOneByIdAndCpf_WhenSendPaymentIdAndCpfValid_ExpectedPaymentDto() {
-        when(paymentRepository.findByIdAndCpf(anyLong(), anyString())).
-                thenReturn(Optional.of(PaymentBuilder.getPayment()));
+    void findByIdOrCpf_WhenSendPaymentIdAndCpfValid_ExpectedPaymentDto() {
+        when(paymentRepository.findAll((Specification<Payment>) any(), (Pageable) any()))
+                .thenReturn(PaymentBuilder.getPaymentPageable());
 
-        PaymentDTO response = paymentService.findOneByIdAndCpf(PaymentBuilder.getPayment().getId(),
-                PaymentBuilder.getPayment().getCpf());
+        Pageable page = PageRequest.of(0, 100);
+        Page<PaymentDTO> response = paymentService.findByIdOrCpf(1L, "461.912.588-10", page);
 
         assertNotNull(response);
-        assertEquals(PaymentDTO.class, response.getClass());
-        assertEquals(PaymentBuilder.getPaymentDTO().getId(), response.getId());
+        assertEquals(PageImpl.class, response.getClass());
+        assertEquals(1, response.getNumberOfElements());
     }
 
     @Test
-    void findOneByIdAndCpf_WhenSendPaymentIdAndCpfInvalid_ExpectedObjectNotFoundException() {
-        ObjectNotFound response = assertThrows(ObjectNotFound.class, () ->
-                paymentService.findOneByIdAndCpf(PaymentBuilder.getPaymentDTO().getId(),
-                        PaymentBuilder.getPayment().getCpf()));
+    void findByIdOrCpf_WhenNotSendParameters_ExpectedPagePaymentDto() {
+        when(paymentRepository.findAll((Specification<Payment>) any(), (Pageable) any()))
+                .thenReturn(PaymentBuilder.getPaymentPageable());
 
-        assertEquals("Payment Not Found!", response.getMessage());
+        Pageable page = PageRequest.of(0, 100);
+        Page<PaymentDTO> response = paymentService.findByIdOrCpf(null, null, page);
+
+        assertNotNull(response);
+        assertEquals(PageImpl.class, response.getClass());
+        assertEquals(1, response.getNumberOfElements());
+    }
+
+    @Test
+    void findByIdOrCpf_WhenSendPaymentIdValid_ExpectedPagePaymentDto() {
+        when(paymentRepository.findAll((Specification<Payment>) any(), (Pageable) any()))
+                .thenReturn(PaymentBuilder.getPaymentPageable());
+
+        Pageable page = PageRequest.of(0, 100);
+        Page<PaymentDTO> response = paymentService.findByIdOrCpf(1L, null, page);
+
+        assertNotNull(response);
+        assertEquals(PageImpl.class, response.getClass());
+        assertEquals(1, response.getNumberOfElements());
+    }
+
+    @Test
+    void findByIdOrCpf_WhenSendPaymentCPFValid_ExpectedPagePaymentDto() {
+        when(paymentRepository.findAll((Specification<Payment>) any(), (Pageable) any()))
+                .thenReturn(PaymentBuilder.getPaymentPageable());
+
+        Pageable page = PageRequest.of(0, 100);
+        Page<PaymentDTO> response = paymentService.findByIdOrCpf(1L, "461.912.588-10", page);
+
+        assertNotNull(response);
+        assertEquals(PageImpl.class, response.getClass());
+        assertEquals(1, response.getNumberOfElements());
+    }
+
+    @Test
+    void findByIdOrCpf_WhenSendPaymentCPFNonexistent_ExpectedEmptyPage() {
+        when(paymentRepository.findAll((Specification<Payment>) any(), (Pageable) any()))
+                .thenReturn(new PageImpl<>(Collections.EMPTY_LIST));
+
+        Pageable page = PageRequest.of(0, 100);
+        Page<PaymentDTO> response = paymentService.findByIdOrCpf(null, "461.912.588-10", page);
+
+        assertNotNull(response);
+        assertEquals(PageImpl.class, response.getClass());
+        assertEquals(0, response.getNumberOfElements());
+    }
+
+    @Test
+    void findByIdOrCpf_WhenSendPaymentIdNonexistent_ExpectedEmptyPage() {
+        when(paymentRepository.findAll((Specification<Payment>) any(), (Pageable) any()))
+                .thenReturn(new PageImpl<>(Collections.EMPTY_LIST));
+
+        Pageable page = PageRequest.of(0, 100);
+        Page<PaymentDTO> response = paymentService.findByIdOrCpf(150L, null, page);
+
+        assertNotNull(response);
+        assertEquals(PageImpl.class, response.getClass());
+        assertEquals(0, response.getNumberOfElements());
     }
 
     @Test
