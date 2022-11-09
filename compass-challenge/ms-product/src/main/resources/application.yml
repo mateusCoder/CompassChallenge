@@ -1,0 +1,18 @@
+server:
+  port: 8070
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    initialization-mode: always
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/product
+    username: postgres
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL81Dialect
+        format_sql: true
+    show-sql: true
