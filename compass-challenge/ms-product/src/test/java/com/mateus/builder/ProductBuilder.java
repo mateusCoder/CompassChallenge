@@ -36,6 +36,7 @@ public class ProductBuilder {
 
     public static ProductDTO getProductDTO(){
         return ProductDTO.builder()
+                .id(id)
                 .name(name)
                 .description(description)
                 .price(price)

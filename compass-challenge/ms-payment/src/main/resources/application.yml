@@ -10,7 +10,7 @@ spring:
     driverClassName: org.postgresql.Driver
     initialization-mode: always
     password: postgres
-    url: jdbc:postgresql://localhost:5432/payment
+    url: jdbc:postgresql://localhost:5432/payment_db
     username: postgres
   jpa:
     defer-datasource-initialization: true

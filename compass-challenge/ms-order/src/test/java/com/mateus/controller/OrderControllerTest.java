@@ -1,29 +1,22 @@
 package com.mateus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mateus.builder.OrderBuilder;
 import com.mateus.builder.ProductBuilder;
-import com.mateus.config.MQConfig;
 import com.mateus.domain.Order;
-import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
 import com.mateus.domain.dto.OrderFormDTO;
 import com.mateus.domain.dto.OrderProductsFormDTO;
-import com.mateus.domain.dto.ProductFormPostDTO;
-import com.mateus.domain.dto.ProductFormPutDTO;
+import com.mateus.domain.dto.ProductDTO;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
-import com.mateus.repository.ProductRepository;
+import com.mateus.repository.feignClients.ProductFeign;
 import com.mateus.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,10 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc()
@@ -50,7 +40,7 @@ class OrderControllerTest {
 
     private final MockMvc mockMvc;
 
-    private final ProductRepository productRepository;
+    private final ProductFeign productFeign;
 
     private final OrderRepository orderRepository;
 
@@ -63,23 +53,9 @@ class OrderControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Product product = productRepository.save(new Product(7L, "Super Cooler",
-                "Cooler 30L", BigDecimal.valueOf(322), true));
-        Order order = orderRepository.save(new Order(null, "461.912.588-10", null, List.of(product), product.getPrice(),
+        ProductDTO product = productFeign.findByNameAndActiveTrue("Garrafa").getBody();
+        Order order = orderRepository.save(new Order(null, "461.912.588-10", null, List.of("Garrafa"), product.getPrice(),
                 LocalDate.now(), Status.ORDER_CREATED));
-    }
-
-    @Test
-    public void save_WhenSendOrderFormDtoWithProductInvalid_ExpectedObjectNotFoundException() throws Exception {
-        String orderRequest = objectMapper.writeValueAsString(new OrderFormDTO("461.912.588-10",
-                List.of(new OrderProductsFormDTO("Amaciante", 1))));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(orderRequest))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
-                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -124,8 +100,8 @@ class OrderControllerTest {
     public void findByOrderNumber_WhenSendOrderNumberValid_ExpectedResponseEntityOrderDto() throws Exception {
         Order order = orderRepository.save(new Order(null, "461.912.588-10",
                 "fda02b10-a8f7-4df7-99a6-802edefd5624",
-                List.of(ProductBuilder.getProduct()),
-                ProductBuilder.getProduct().getPrice(),
+                List.of(ProductBuilder.getProductDTO().getBody().getName()),
+                ProductBuilder.getProductDTO().getBody().getPrice(),
                 LocalDate.now(), Status.ORDER_CREATED));
         orderRepository.save(order);
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/orderNumber/{orderNumber}",

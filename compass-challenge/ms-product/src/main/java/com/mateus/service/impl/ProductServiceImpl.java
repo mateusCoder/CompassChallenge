@@ -52,15 +52,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO update(Long id, ProductFormPutDTO productFormPutDTO) {
-        productRepository.findById(id).orElseThrow(() ->  {
+    public ProductDTO findByNameAndActiveTrue(String name) {
+        return mapper.map(productRepository.findByNameAndActiveTrue(name).orElseThrow(() ->  {
             log.error("Error when trying to update product");
             throw new ObjectNotFound("Product Not Found!");
-        });
+        }), ProductDTO.class) ;
+    }
+
+    @Override
+    public ProductDTO update(Long id, ProductFormPutDTO productFormPutDTO) {
+        checkExistenceOfProduct(id);
         Product product = mapper.map(productFormPutDTO, Product.class);
         product.setId(id);
         productRepository.save(product);
         log.info("Product updated successfully");
         return mapper.map(product, ProductDTO.class);
+    }
+
+    public Product checkExistenceOfProduct(Long id){
+        return productRepository.findById(id).orElseThrow(() ->  {
+            log.error("Error when trying to update product");
+            throw new ObjectNotFound("Product Not Found!");
+        });
     }
 }

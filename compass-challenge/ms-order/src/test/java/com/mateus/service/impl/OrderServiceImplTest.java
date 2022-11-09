@@ -5,17 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.builder.OrderBuilder;
 import com.mateus.builder.ProductBuilder;
 import com.mateus.domain.Order;
-import com.mateus.domain.Product;
 import com.mateus.domain.dto.OrderDTO;
-import com.mateus.domain.dto.OrderDataProcessingDTO;
-import com.mateus.domain.dto.ProductDTO;
 import com.mateus.exception.BusinessException;
-import com.mateus.exception.Conflict;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
-import com.mateus.repository.ProductRepository;
-import com.mateus.service.OrderService;
-import org.aspectj.weaver.ast.Or;
+import com.mateus.repository.feignClients.ProductFeign;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,12 +29,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @AutoConfigureTestDatabase
@@ -53,10 +45,10 @@ class OrderServiceImplTest {
     OrderRepository orderRepository;
 
     @Mock
-    ProductRepository productRepository;
+    RabbitTemplate rabbitTemplate;
 
     @Mock
-    RabbitTemplate rabbitTemplate;
+    ProductFeign productFeign;
 
     @Spy
     ModelMapper mapper;
@@ -71,28 +63,14 @@ class OrderServiceImplTest {
         MockHttpServletRequest request =new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        when(productRepository.findByNameAndActiveTrue(any())).thenReturn(Optional.of(ProductBuilder.getProduct()));
+        when(productFeign.findByNameAndActiveTrue(any())).thenReturn(ProductBuilder.getProductDTO());
         when(orderRepository.save(any())).thenReturn(OrderBuilder.getOrder());
         doNothing().when(rabbitTemplate).convertAndSend(any());
 
         URI response = orderService.save(OrderBuilder.getOrderFormDTO());
 
-        verify(productRepository, times(1)).findByNameAndActiveTrue(anyString());
+        verify(productFeign, times(1)).findByNameAndActiveTrue(anyString());
         verify(orderRepository, times(1)).save(any(Order.class));
-
-    }
-
-    @Test
-    public void save_WhenSendOrderFormDtoWithProductNameInvalid_ExpectedObjectNotFoundException() throws JsonProcessingException {
-        MockHttpServletRequest request =new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        when(orderRepository.save(any())).thenReturn(OrderBuilder.getOrder());
-
-        ObjectNotFound response = assertThrows(ObjectNotFound.class, () ->
-                orderService.save(OrderBuilder.getOrderFormDTO()));
-
-        assertEquals("Product Not Found!", response.getMessage());
 
     }
 

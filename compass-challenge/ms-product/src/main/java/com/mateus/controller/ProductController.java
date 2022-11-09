@@ -43,6 +43,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll(page));
     }
 
+    @GetMapping("/{name}")
+    public ResponseEntity<ProductDTO> findByNameAndActiveTrue(@Parameter(description = "Name of product active to be searched")
+                                                      @PathVariable String name){
+        return ResponseEntity.ok(productService.findByNameAndActiveTrue(name));
+    }
+
     @PutMapping("/{id}")
     @UpdateProductDocConfig
     public ResponseEntity<ProductDTO> update(@Parameter(description = "id of order to be searched") @PathVariable Long id,

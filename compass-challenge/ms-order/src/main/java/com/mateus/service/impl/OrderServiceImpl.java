@@ -3,23 +3,17 @@ package com.mateus.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateus.domain.Order;
-import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
-import com.mateus.domain.dto.OrderDTO;
-import com.mateus.domain.dto.OrderDataProcessingDTO;
-import com.mateus.domain.dto.OrderFormDTO;
-import com.mateus.domain.dto.OrderProductsFormDTO;
+import com.mateus.domain.dto.*;
 import com.mateus.exception.BusinessException;
 import com.mateus.exception.ObjectNotFound;
 import com.mateus.repository.OrderRepository;
-import com.mateus.repository.ProductRepository;
+import com.mateus.repository.feignClients.ProductFeign;
 import com.mateus.service.OrderService;
 import com.mateus.util.QueueUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,31 +30,25 @@ import java.util.UUID;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
-
     private final OrderRepository orderRepository;
-
-    private final ProductRepository productRepository;
 
     private final ModelMapper mapper;
 
     private final RabbitTemplate rabbitTemplate;
 
+    private final ProductFeign productFeign;
+
     @Override
     public URI save(OrderFormDTO orderFormDTO) throws JsonProcessingException {
         Order order = mapper.map(orderFormDTO, Order.class);
-        List<Product> products = orderFormDTO.getOrderProducts().stream().map(e ->
-                productRepository.findByNameAndActiveTrue(e.getProductsName())
-                        .orElseThrow(() -> {
-                            log.error("Error when trying to save order with product not found");
-                            throw new ObjectNotFound("Product Not Found!");
-                        })).toList();
-        List<BigDecimal> productsPrice = products.stream().map(Product::getPrice).toList();
+        List<ProductDTO> products = orderFormDTO.getOrderProducts().stream().map(e ->
+                productFeign.findByNameAndActiveTrue(e.getProductsName()).getBody()).toList();
+        List<BigDecimal> productsPrice = products.stream().map(ProductDTO::getPrice).toList();
         List<Integer> productsAmount = orderFormDTO.getOrderProducts().stream()
                 .map(OrderProductsFormDTO::getAmount).toList();
 
         order.setOrderNumber(UUID.randomUUID().toString());
-        products.forEach(order::setProducts);
+        products.stream().map(ProductDTO::getName).toList().forEach(order::setProducts);
         order.setTotalOrderPrice(calculateTotalOrderAmount(productsPrice, productsAmount));
         order.setStatus(Status.ORDER_CREATED);
         orderRepository.save(order);

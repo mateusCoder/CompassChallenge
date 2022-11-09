@@ -1,7 +1,6 @@
 package com.mateus.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +23,7 @@ public class OrderDTO {
 
     private String orderNumber;
 
-    private List<Product> products;
+    private List<String> products;
 
     private BigDecimal totalOrderPrice;
 

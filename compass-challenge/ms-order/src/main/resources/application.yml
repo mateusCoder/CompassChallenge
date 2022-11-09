@@ -8,7 +8,7 @@ spring:
     driverClassName: org.postgresql.Driver
     initialization-mode: always
     password: postgres
-    url: jdbc:postgresql://localhost:5432/order
+    url: jdbc:postgresql://localhost:5432/order_db
     username: postgres
   jpa:
     defer-datasource-initialization: true

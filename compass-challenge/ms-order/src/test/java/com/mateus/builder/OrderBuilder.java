@@ -1,7 +1,6 @@
 package com.mateus.builder;
 
 import com.mateus.domain.Order;
-import com.mateus.domain.Product;
 import com.mateus.domain.constant.Status;
 import com.mateus.domain.dto.OrderDTO;
 import com.mateus.domain.dto.OrderDataProcessingDTO;
@@ -24,7 +23,7 @@ public class OrderBuilder {
 
     private static final String orderNumber = "46a3eb49-72ae-4e51-afdf-686e395f2b17";
 
-    private static final List<Product> products = new ArrayList<>(Set.of(ProductBuilder.getProduct()));
+    private static final List<String> products = new ArrayList<>(List.of("Garrafa"));
 
     private static final BigDecimal totalOrderPrice = BigDecimal.valueOf(1000);
 
@@ -32,7 +31,7 @@ public class OrderBuilder {
 
     private static final Status status = Status.ORDER_CREATED;
 
-    private static final String productsName = ProductBuilder.getProduct().getName();
+    private static final String productsName = "Garrafa";
 
     private static final Integer amount = 10;
 

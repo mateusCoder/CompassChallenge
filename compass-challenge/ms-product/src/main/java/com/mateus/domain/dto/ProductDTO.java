@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Builder
 public class ProductDTO {
 
+    private Long id;
+
     private String name;
 
     private String description;

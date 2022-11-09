@@ -14,4 +14,6 @@ public interface ProductService {
     ProductDTO update(Long id, ProductFormPutDTO productFormPutDTO);
 
     Page<ProductDTO> findAll(Pageable page);
+
+    ProductDTO findByNameAndActiveTrue(String name);
 }

@@ -28,8 +28,8 @@ public class Order implements Serializable {
 
     private String orderNumber;
 
-    @ManyToMany
-    private List<Product> products = new ArrayList<>();
+    @ElementCollection(targetClass=String.class)
+    private List<String> products = new ArrayList<>();
 
     private BigDecimal totalOrderPrice;
 
@@ -38,8 +38,8 @@ public class Order implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public void setProducts(Product product) {
-        this.products.add(product);
+    public void setProducts(String productName) {
+        this.products.add(productName);
     }
 
     @PrePersist
