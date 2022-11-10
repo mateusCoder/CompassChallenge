@@ -20,16 +20,17 @@
 
 ## ⚙️ Funcionalidades
 
-- [x] O Microserviço Order permite cadastrar:
+- [x] O Microserviço Product permite cadastrar:
     - [x] Produtos informando:
     - Nome
     - Descrição
     - preço
+- [x] O Microserviço Order permite cadastrar:
     - [x] Pedidos informando:
     - CPF
     - Nomes dos Produtos
     - Quantidade dos Produtos
-- [x] O Microserviço Pagamento permite consultar:
+- [x] O Microserviço Payment permite consultar:
     - [x] Pagamentos informando:
     - ID
     - CPF
@@ -39,6 +40,7 @@
 O projeto possui suporte as seguintes tarefas:
 
 - [x] Mensageria com RabbitMQ
+- [x] Integração síncrona com Open Feign
 - [x] Log da Aplicação
 - [x] Documentação com Swagger
 - [x] Observabilidade com Grafana
@@ -87,10 +89,6 @@ $ docker-compose up
 # Faça o login no rabbitmq, acesse http://localhost:15672 e insira:
 $ login: rabbitmq
 $ senha: rabbitmq
-
-# Com o Rabbitmq rodando
-# Abra a pasta ms-order e execute a aplicação em modo de desenvolvimento
-# Abra a pasta ms-payment e execute a aplicação em modo de desenvolvimento
 ```
 
 
@@ -102,18 +100,21 @@ $ senha: root
 
 # Crie um novo servidor
 
-# Crie dois novos bancos de dados com os nomes: 
-$ order
-$ payment
+# Crie três novos bancos de dados com os nomes: 
+$ product_db
+$ order_db
+$ payment_db
 ```
 
 
 ><div align="center"> Executando a Aplicação </div>
 
 ```
+# Abra a pasta ms-product e execute a aplicação em modo de desenvolvimento
 # Abra a pasta ms-order e execute a aplicação em modo de desenvolvimento
 # Abra a pasta ms-payment e execute a aplicação em modo de desenvolvimento
 
+# A aplicação ms-product será aberta na porta:8070 - acesse http://localhost:8070/v1
 # A aplicação ms-order será aberta na porta:8080 - acesse http://localhost:8080/v1
 # A aplicação ms-payment será aberta na porta:8090 - acesse http://localhost:8090/v1
 ```
@@ -121,9 +122,10 @@ $ payment
 ## 📃 Swagger ##
 
 Para acessar a documentação Compass Challenge: 
-1. []()Verifique que os microserviços Order e Payment estão sendo executados
-2. Para visualizar a documentação, acesse: [Ms-Order](http://localhost:8080/swagger-ui/index.html#/)
-3. Para visualizar a documentação, acesse: [Ms-Payment](http://localhost:8090/swagger-ui/index.html#/)
+1. []()Verifique que os microserviços Product, Order e Payment estão sendo executados
+2. Para visualizar a documentação, acesse: [Ms-Product](http://localhost:8070/swagger-ui/index.html#/)
+3. Para visualizar a documentação, acesse: [Ms-Order](http://localhost:8080/swagger-ui/index.html#/)
+4. Para visualizar a documentação, acesse: [Ms-Payment](http://localhost:8090/swagger-ui/index.html#/)
 
 
 ## 💾 Log ##
@@ -132,13 +134,20 @@ Para acessar os Logs, basta executar a aplicação, após isso serão salvos arq
 
 ## 📌 EndPoints
 
+><div align="center"> Microserviço Product </div>
+
+| Entidade | Método | EndPoint            | Description                                               |
+|----------|--------|---------------------|-----------------------------------------------------------|
+| Produto  | GET    | /v1/products        | Lista todos os produtos cadastrados                       |
+| Produto  | GET    | /v1/products/{name} | Detalha o cadastro de um pedido pelo nome e se está ativo |
+| Produto  | POST   | /v1/products        | Cadastra um novo produto                                  |
+| Produto  | PUT    | /v1/products/{id}   | Atualiza o cadastro de um produto existente pelo ID       |
+
+
 ><div align="center"> Microserviço Order </div>
 
 | Entidade | Método | EndPoint                             | Description                                                     |
 |----------|--------|--------------------------------------|-----------------------------------------------------------------|
-| Produto  | GET    | /v1/products                         | Lista todos os produtos cadastrados                             |
-| Produto  | POST   | /v1/products                         | Cadastra um novo produto                                        |
-| Produto  | PUT    | /v1/products/{id}                    | Atualiza o cadastro de um produto existente pelo ID             |
 | Pedido   | POST   | /v1/orders                           | Cadastra um novo pedido                                         |
 | Pedido   | GET    | /v1/orders/{id}                      | Detalha o cadastro de um pedido existente pelo ID               |
 | Pedido   | GET    | /v1/orders/orderNumber/{orderNumber} | Detalha o cadastro de um pedido existente pelo número do Pedido |
@@ -146,9 +155,12 @@ Para acessar os Logs, basta executar a aplicação, após isso serão salvos arq
 
 
 ><div align="center"> Microserviço Payment </div>
-| Entidade  | Método | EndPoint                           | Description                                   |
-|-----------|--------|------------------------------------|-----------------------------------------------|
-| Pagamento | GET    | /v1/payments/{id}/customer/{cpf}   | Detalha um pagamento cadastrado pelo ID e CPF |
+| Entidade  | Método | EndPoint                        | Description                                   |
+|-----------|--------|---------------------------------|-----------------------------------------------|
+| Pagamento | GET    | /v1/payments/?cpf={cpf}         | Detalha um pagamento cadastrado pelo CPF      |
+| Pagamento | GET    | /v1/payments/?id={id}           | Detalha um pagamento cadastrado pelo ID       |
+| Pagamento | GET    | /v1/payments/?cpf={cpf}&id={id} | Detalha um pagamento cadastrado pelo ID e CPF |
+| Pagamento | GET    | /v1/payments/                   | Lista todos os pagamentos cadastrados         |
 
 
 ><div align="center"> Observabilidade Grafana </div>
@@ -166,6 +178,7 @@ Para acessar os Logs, basta executar a aplicação, após isso serão salvos arq
 ><div align="center"> Documentação Swagger </div>
 | URL                                           | Description             |
 |-----------------------------------------------|-------------------------|
+| http://localhost:8070/swagger-ui/index.html#/ | Documentação Ms-Product |
 | http://localhost:8080/swagger-ui/index.html#/ | Documentação Ms-Order   |
 | http://localhost:8090/swagger-ui/index.html#/ | Documentação Ms-Payment |
 
@@ -191,6 +204,7 @@ Foram usadas as seguintes tecnologias e ferramentas para a construção da API:
 * [PostgreSQL](https://www.postgresql.org/) - Banco de Dados para Produção
 * [Swagger](https://swagger.io/tools/swagger-editor/) - Documentação
 * [RabbitMq](https://www.rabbitmq.com/) - Mensageria
+* [Open Feign](https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/) - Integração síncrona
 * [Grafana](https://grafana.com/) - Observabilidade
 * [Docker](https://www.docker.com/) - Plataforma de virtualização
 * [Postman](https://www.postman.com/) - Plataforma da API
@@ -222,7 +236,6 @@ Foram usadas as seguintes tecnologias e ferramentas para a construção da API:
 ## 🎬📽 Apresentação
 
 A gravação da apresentação do desafio está disponível no <a href="https://compasso-my.sharepoint.com/:v:/g/personal/mateus_moraes_compasso_com_br/EXbGPm5DjBRGjFkKtlpCrywBGN_WuK322MsKTvWps-hhig?email=mateus.moraes%40compasso.com.br" target="_blank" rel="noreferrer" rel="noopener"> link </a>.
-
 
 
 ## ❤️ Apoio
