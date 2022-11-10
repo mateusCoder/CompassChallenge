@@ -85,6 +85,25 @@ class ProductServiceImplTest {
     }
 
     @Test
+    public void findByNameAndActiveTrue_WhenSendProductNameActive_ExpectedPageableProductDto() {
+        when(productRepository.findByNameAndActiveTrue(anyString())).thenReturn(Optional.of(ProductBuilder.getProduct()));
+
+        ProductDTO response = productService.findByNameAndActiveTrue(ProductBuilder.getProduct().getName());
+
+        assertNotNull(response);
+        assertEquals(ProductDTO.class, response.getClass());
+        assertEquals(ProductBuilder.getProductDTO().getId(), response.getId());
+    }
+
+    @Test
+    public void findByNameAndActiveTrue_WhenSendProductNameInvalid_ExpectedObjectNotFoundException() {
+        ObjectNotFound response = assertThrows(ObjectNotFound.class, () ->
+                productService.findByNameAndActiveTrue(ProductBuilder.getProduct().getName()));
+
+        assertEquals("Product Not Found!", response.getMessage());
+    }
+
+    @Test
     public void update_WhenSendProductFormPutDtoWithTotalElements_ExpectedProductDto() {
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(ProductBuilder.getProduct()));
         when(productRepository.save(any())).thenReturn(ProductBuilder.getProduct());

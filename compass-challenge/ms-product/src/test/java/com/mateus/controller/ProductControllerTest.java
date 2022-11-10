@@ -90,6 +90,22 @@ class ProductControllerTest {
     }
 
     @Test
+    void findByNameAndActiveTrue_WhenSendProductNameActive_ExpectedResponseEntityProductDto() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/products/{name}", "Garrafa Inox"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(Assertions::assertNotNull)
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    void findByNameAndActiveTrue_WhenSendProductNameInvalid_ExpectedObjectNotFoundException() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/products/{name}", "GarrafaInox"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ObjectNotFound))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     void update_WhenSendProductFormPutDtoWithTotalElements_ExpectedResponseEntityProductDto() throws Exception {
         productRepository.save(ProductBuilder.getProduct());
         String productRequest = objectMapper.writeValueAsString(ProductBuilder.getProductFormPutDTO());
