@@ -14,9 +14,11 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "List all paginated products", description = "This method returns all paginated product records",
+@Operation(summary = "List a specific product", description = "This method returns a specific. Use the product name.",
         tags = {"Product"})
 @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Ok",
-        content = @Content(mediaType = "application/json"))} )
-public @interface GetAllProductDocConfig {
+        content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "404", description = "Not Found",
+                content = @Content(schema = @Schema(implementation = StandardError.class), mediaType = "application/json"))})
+public @interface GetProductByNameDocConfig {
 }

@@ -1,6 +1,7 @@
 package com.mateus.controller;
 
 import com.mateus.config.annotations.product.GetAllProductDocConfig;
+import com.mateus.config.annotations.product.GetProductByNameDocConfig;
 import com.mateus.config.annotations.product.SaveProductDocConfig;
 import com.mateus.config.annotations.product.UpdateProductDocConfig;
 import com.mateus.domain.dto.ProductDTO;
@@ -44,6 +45,7 @@ public class ProductController {
     }
 
     @GetMapping("/{name}")
+    @GetProductByNameDocConfig
     public ResponseEntity<ProductDTO> findByNameAndActiveTrue(@Parameter(description = "Name of product active to be searched")
                                                       @PathVariable String name){
         return ResponseEntity.ok(productService.findByNameAndActiveTrue(name));
