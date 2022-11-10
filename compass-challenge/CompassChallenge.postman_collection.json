@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "MsOrder",
+			"name": "MsProduct",
 			"item": [
 				{
 					"name": "Product",
@@ -24,15 +24,15 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\":\"Garrafa\",\r\n    \"description\":\"Garrafa térmica inox\",\r\n    \"price\":30.5\r\n}"
+									"raw": "{\r\n    \"name\":\"Garrafa Inactive\",\r\n    \"description\":\"Garrafa térmica inox\",\r\n    \"price\":30.5\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/v1/products",
+									"raw": "http://localhost:8070/v1/products",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
+									"port": "8070",
 									"path": [
 										"v1",
 										"products"
@@ -57,12 +57,12 @@
 									"raw": "{\r\n    \"name\":\"Pote Plastico\",\r\n    \"description\":\"Garrafa térmica inox\",\r\n    \"price\":10.2\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/v1/products",
+									"raw": "http://localhost:8070/v1/products",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
+									"port": "8070",
 									"path": [
 										"v1",
 										"products"
@@ -87,12 +87,42 @@
 									"raw": "{\r\n    \"name\":\"Super Cooler\",\r\n    \"description\":\"Cooler 30L\",\r\n    \"price\":322.0\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/v1/products",
+									"raw": "http://localhost:8070/v1/products",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
+									"port": "8070",
+									"path": [
+										"v1",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save Product Cooler Copy",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Super Cooler\",\r\n    \"description\":\"Cooler 30L\",\r\n    \"price\":322.0\r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8070/v1/products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8070",
 									"path": [
 										"v1",
 										"products"
@@ -107,15 +137,36 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/v1/products",
+									"raw": "http://localhost:8070/v1/products",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
+									"port": "8070",
 									"path": [
 										"v1",
 										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Products By Name and Active",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8070/v1/products/Garrafa",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8070",
+									"path": [
+										"v1",
+										"products",
+										"Garrafa"
 									]
 								}
 							},
@@ -137,12 +188,12 @@
 									"raw": "{\r\n    \"name\":\"Garrafa Inox\",\r\n    \"description\":\"Garrafa térmica inox\",\r\n    \"price\":30.5,\r\n    \"active\":false\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/v1/products/4",
+									"raw": "http://localhost:8070/v1/products/4",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "8080",
+									"port": "8070",
 									"path": [
 										"v1",
 										"products",
@@ -153,7 +204,12 @@
 							"response": []
 						}
 					]
-				},
+				}
+			]
+		},
+		{
+			"name": "MsOrder",
+			"item": [
 				{
 					"name": "Order",
 					"item": [
@@ -221,7 +277,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/v1/orders/1",
+									"raw": "http://localhost:8080/v1/orders/4",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -230,29 +286,7 @@
 									"path": [
 										"v1",
 										"orders",
-										"1"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Find Order By CPF",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8080/v1/orders/cpf/461.912.588-10",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"v1",
-										"orders",
-										"cpf",
-										"461.912.588-10"
+										"4"
 									]
 								}
 							},
@@ -264,7 +298,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/v1/orders/orderNumber/3",
+									"raw": "http://localhost:8080/v1/orders/orderNumber/46a3eb49-72ae-4e51-afdf-686e395f2b17",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -274,7 +308,29 @@
 										"v1",
 										"orders",
 										"orderNumber",
-										"3"
+										"46a3eb49-72ae-4e51-afdf-686e395f2b17"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Find Order By CPF",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/v1/orders/customer/461.912.588-10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"orders",
+										"customer",
+										"461.912.588-10"
 									]
 								}
 							},
@@ -291,12 +347,12 @@
 					"name": "Payment",
 					"item": [
 						{
-							"name": "Find Payment by Id and CPF",
+							"name": "Find by Id or CPF",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8090/v1/payments/1/client/461.912.588-10",
+									"raw": "http://localhost:8090/v1/payments/?cpf=461.912.588-10&id=19",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -305,9 +361,22 @@
 									"path": [
 										"v1",
 										"payments",
-										"1",
-										"client",
-										"461.912.588-10"
+										""
+									],
+									"query": [
+										{
+											"key": "cpf",
+											"value": "461.912.588-10"
+										},
+										{
+											"key": "id",
+											"value": "19"
+										},
+										{
+											"key": "sort",
+											"value": "id,desc",
+											"disabled": true
+										}
 									]
 								}
 							},
